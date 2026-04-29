@@ -6,9 +6,61 @@
 
 \chapter{Hilbert symbol}
 
-\begin{definition}\label{def:Hilbert_symbol}
-	TODO (Hilbert symbol, III.1.1)
+\section{Hilbert symbol over a field}
+
+\begin{definition}\label{def:Hilbert_symbol}\lean{HilbertSymbol}
+	%TODO (Hilbert symbol, III.1.1)
+	Let $k$ be a field and $a, b \in k^\times$. The \emph{Hilbert symbol} $(a, b)_k$ is defined as follows: if there exist $x, y, z \in k$, not all zero, such that $z^2 = ax^2 + by^2$, then $(a, b)_k = 1$; otherwise, $(a, b)_k = -1$.
 \end{definition}
+
+The Hilbert symbols has the following properties, useful for computing it in practice.
+
+\begin{lemma}\label{lem:well_defined_up_to_squares}\lean{well_defined_up_to_squares}
+	Let $a, b, a', b' \in k^\times$. Then $(a,b)_k = (a a'^2, b b'^2)_k$.
+\end{lemma}
+
+The following definition and lemma use \code{QuadraticAlgebra} from \mathlib.
+\begin{definition}\label{def:kb}\lean{kb}
+	For $b \in k^\times$, we denote by $k(\sqrt{b})$ the field extension of $k$ obtained by adjoining	a square root of $b$.
+\end{definition}
+
+\begin{lemma}\label{lem:eq_one_iff}\lean{eq_one_iff}
+	Let $a, b \in k^\times$. Then $(a, b)_k = 1$ if and only if there exists $t \in k(\sqrt{b})$ such that $a = N_{k(\sqrt{b})/k}(t)$.
+\end{lemma}
+
+\begin{lemma}\label{lem:sym}\lean{sym}
+	For $a, b \in k^\times$, we have $(a, b)_k = (b, a)_k$.
+\end{lemma}
+
+\begin{lemma}\label{lem:one_of_square}\lean{one_of_square}
+	Let $a, c \in k^\times$. Then $(a, c^2)_k = 1$.
+\end{lemma}
+
+\begin{lemma}\label{lem:one_of_neg_self}\lean{one_of_neg_self}
+	For $a \in k^\times$, we have $(a, -a)_k = 1$.
+\end{lemma}
+
+\begin{lemma}\label{lem:one_of_one_minus_self}\lean{one_of_one_minus_self}
+	Let $a \in k^\times$ with $a \ne 1$. Then $(a, 1 - a)_k = 1$.
+\end{lemma}
+
+\begin{lemma}\label{lem:of_mul}\lean{of_mul}
+	Let $a, a', b \in k^\times$ and assume that $(a, b)_k = 1$. Then $(a a', b)_k = (a', b)_k$.
+\end{lemma}
+
+\begin{lemma}\label{lem:of_neg_mul}\lean{of_neg_mul}
+	Let $a, b \in k^\times$. Then $(a, -ab)_k = (a, b)_k$.
+\end{lemma}
+
+\begin{lemma}\label{lem:of_minus_self_mul}\lean{of_minus_self_mul}
+	Let $a, b \in k^\times$ with $a \ne 1$. Then $(a, (1-a)b)_k = (a, b)_k$.
+\end{lemma}
+
+We now specialize to the case where $k$ is either $\R$ or $\Q_p$ for some prime $p$. In this case, the Hilbert symbol can be computed explicitly.
+
+\begin{theorem}\label{thm:real}\lean{real}
+	Let $a, b \in \R^\times$. Then $(a, b)_\R = 1$ if and only if $a > 0$ or $b > 0$; otherwise $(a, b)_\R = -1$.
+\end{theorem}
 
 \begin{lemma}\label{lem:approx_thm}
 TODO (Lemma 2 in III.2.2)

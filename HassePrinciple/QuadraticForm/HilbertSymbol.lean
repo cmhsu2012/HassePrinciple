@@ -6,7 +6,7 @@ Authors: Nirvana Coppola, María Inés de Frutos-Fernández
 module
 
 public import Mathlib
-public import HassePrinciple.QuadraticForm.Basic
+--public import HassePrinciple.QuadraticForm.Basic
 
 
 @[expose] public section
@@ -16,20 +16,20 @@ noncomputable section
 namespace HilbertSymbol
 
 -- k is a field and typically will be either ℝ or ℚ_p, but we need less for the definition.
-variable {k : Type*} [Field k] [CharZero k]
+variable {k : Type*} [Field k] --[DecidableEq k] --[CharZero k]
 
-noncomputable def a_b_quadratic_form (a b : kˣ) :
+/-noncomputable def a_b_quadratic_form (a b : kˣ) :
     QuadraticForm k (Fin (Nat.succ 0).succ.succ → k):=
-  QuadraticMap.weightedSumSquares k ![1, -a, -b]
+  QuadraticMap.weightedSumSquares k ![1, -a, -b]-/
 
 -- My guess: this would follow from DecidableEq k
 --instance (a b : kˣ) : Decidable (a_b_quadratic_form a b).Isotropic := sorry
 
 noncomputable def _root_.HilbertSymbol (a b : kˣ) : ℤˣ := by
-  classical exact if (a_b_quadratic_form a b).Isotropic then 1 else -1
+  classical exact if ∃ z x y : k, (z, x, y) ≠ (0, 0, 0) ∧
+  z ^ 2 - a * x ^ 2 - b * y ^ 2 = 0 then 1 else -1
 
-lemma well_defined_up_to_squares (a b a' b' : kˣ) (ha : a' = a * (a' / a) ^ 2)
-    (hb : b' = b * (b' / b) ^ 2) :
+lemma well_defined_up_to_squares (a b a' b' : kˣ) :
     HilbertSymbol a b = HilbertSymbol (a * a' ^ 2) (b * b' ^ 2)  := by
   sorry
 
@@ -60,10 +60,10 @@ theorem of_mul (a a' b : kˣ) (hab : HilbertSymbol a b = 1) : HilbertSymbol (a *
   sorry
 
 @[simp]
-theorem simplification_rule (a b : kˣ) : HilbertSymbol a (- (a * b)) = HilbertSymbol a b := by
+theorem of_neg_mul (a b : kˣ) : HilbertSymbol a (- (a * b)) = HilbertSymbol a b := by
   sorry
 
-theorem simplification_rule' (a b : kˣ) (h : (1 : k) - a ≠ 0) :
+theorem of_minus_self_mul (a b : kˣ) (h : (1 : k) - a ≠ 0) :
     HilbertSymbol a ((Units.mk0 ((1 : k) - a) h) * b) = HilbertSymbol a b := by
   sorry
 
