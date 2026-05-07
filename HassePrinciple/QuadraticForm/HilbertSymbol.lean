@@ -5,8 +5,8 @@ Authors: Nirvana Coppola, María Inés de Frutos-Fernández
 -/
 module
 
-public import Mathlib
---public import HassePrinciple.QuadraticForm.Basic
+public import Mathlib.Algebra.QuadraticAlgebra.Basic
+public import Mathlib.NumberTheory.Padics.RingHoms
 
 
 @[expose] public section
@@ -84,3 +84,6 @@ theorem padic_odd_p (p : ℕ) [Fact (p.Prime)] (hp : p ≠ 2) (a b : ℚ_[p]ˣ) 
   sorry
 
 end HilbertSymbol
+
+
+#min_imports
