@@ -69,11 +69,13 @@ Let $R$ be a commutative ring, let $V$ and $W$ be $R$-modules and let $Q$ and $Q
 
 \begin{definition}\label{def:hyperbolic}
 \lean{QuadraticForm.IsHyperbolic}
+\leanok
 A quadratic form is \emph{hyperbolic} if it is equivalent to the form $X^2 - Y^2$.
 \end{definition}
 
 \begin{lemma}\label{lem:XY_hyperbolic}
 \lean{QuadraticForm.XY_isHyperbolic}
+\leanok
 \uses{def:hyperbolic}
 The quadratic form $XY$ is hyperbolic.
 \end{lemma}
@@ -81,10 +83,13 @@ The quadratic form $XY$ is hyperbolic.
 % NOTE: if needed, assume $R$ is a field.
 \begin{definition}\label{def:represents}
 \lean{QuadraticForm.represents}
+\leanok
 Let $R$ be a commutative ring, let $V$ be an $R$-module and let $Q$ be a quadratic form on $V$. We say that $Q$ \emph{represents} an element $r \in R$ if there exists $x \in V$ such that $Q(v) = r$ and $v \ne 0$.
 \end{definition}
 
 \begin{lemma}\label{lem:represents_zero}
+\lean{QuadraticForm.represents_zero_iff_isotropic}
+\leanok
 \uses{def:represents}
 Let $R$ be a commutative ring, let $V$ be an $R$-module and let $Q$ be a quadratic form on $V$. Then $Q$ \emph{represents} $0$ if and only if it is isotropic.
 \end{lemma}
@@ -95,6 +100,7 @@ This follows immediately from the definitions.
 % NOTE: if needed, assume $R$ is a field.
 \begin{proposition}\label{prop:sum_hyperbolic}
 \lean{QuadraticForm.equivalent_hyperbolic_add}
+\leanok
 \uses{def:hyperbolic, def:represents}
 Let $R$ be a commutative ring. If a quadratic form $Q$ on an $R$-module $V$ represents $0$ and is nondegenerate, then $Q$ is equivalent to $H + Q'$, where $H$ is hyperbolic. Moreover, $f$ represents all elements of $R$.
 \end{proposition}
@@ -104,7 +110,8 @@ The restriction of $Q$ to the submodule $U := Rx \oplus Ry$ is the desired hyper
 \end{proof}
 
 \begin{corollary}\label{cor:represents_iff}
-\lean{QuadraticForm.represents_iff_sub_isotropic}	
+\lean{QuadraticForm.represents_iff_sub_isotropic}
+\leanok	
 Let $K$ be a field, let $r \in K\^times$ and let $Q$ be a quadratic form on a free $K$-vector space $V$. Then $Q$ represents $r$ if and only if the form $Q' := Q \dotminus rZ$ represents $0$.
 \end{corollary}
 \begin{proof}
@@ -113,7 +120,8 @@ The forward implication is clear. For the second one, fix a basis for $V$ and as
 \end{proof}
 
 \begin{corollary}\label{cor:prod_isotropic_iff}
-\lean{QuadraticForm.prod_isotropic_iff, QuadraticForm.prod_isotropic_iff}	
+\lean{QuadraticForm.prod_isotropic_iff, QuadraticForm.prod_isotropic_iff}
+\leanok
 Let $K$ be a field and $Q$ and $Q'$ be nondegenerate quadratic forms over $K$ of rank at least $1$. Then the following properties are equivalent:
 \begin{enumerate}[a)]
 \item $Q \dotminus Q'$ represents $0$.
@@ -130,8 +138,8 @@ The equivalence (b) $\iff$ (c) follows from Corollary \ref{cor:represents_iff}. 
 \section{Quadratic Forms over $\Q_p$}\label{sec:quadratic_form_padic}
 
 \begin{definition}\label{def:discr}
-	\uses{def:Hilbert_symbol}
-	Let $p$ be a prime number and let $f$ be a quadratic form of rank $n$ over $\Q_p$. Take a diagonal quadratic form $a_1X_1^2 + \cdots + a_nX_n^2$ which is equivalent to $f$; then the \emph{discriminant} of $f$ is the element $d(f) = a_1 \cdots a_n \in \Q_p^\times/{\Q_p^\times}^2$.
+\uses{def:Hilbert_symbol}
+Let $p$ be a prime number and let $f$ be a quadratic form of rank $n$ over $\Q_p$. Take a diagonal quadratic form $a_1X_1^2 + \cdots + a_nX_n^2$ which is equivalent to $f$; then the \emph{discriminant} of $f$ is the element $d(f) = a_1 \cdots a_n \in \Q_p^\times/{\Q_p^\times}^2$.
 	
 Note that \mathlib contains \code{QuadraticMap.discr}, as an element of $\Q_p$.
 \end{definition}
@@ -139,6 +147,7 @@ Note that \mathlib contains \code{QuadraticMap.discr}, as an element of $\Q_p$.
 \begin{definition}\label{def:HM_inv}
 \uses{def:Hilbert_symbol}
 \lean{QuadraticForm.HasseMinkoskiInvariant}
+\leanok
 Let $p$ be a prime number and let $f$ be a quadratic form of rank $n$ over $\Q_p$. Take a diagonal quadratic form $a_1X_1^2 + \cdots + a_nX_n^2$ which is equivalent to $f$; then the \emph{Hasse--Minkowski invariant} of $f$ is the element
 \[ \epsilon(f) := \prod_{i < j}(a_i, a_j).\]
 \end{definition}
@@ -146,6 +155,7 @@ Let $p$ be a prime number and let $f$ be a quadratic form of rank $n$ over $\Q_p
 \begin{lemma}\label{lem:HM_inv_well_defined}
 \uses{def:HM_inv}
 \lean{QuadraticForm.HasseMinkoskiInvariant.eq_of_equivalent}
+\leanok
 The value $\epsilon(f)$ does not depend on the choice of diagonal quadratic form equivalent to $f$.
 \end{lemma}
 \begin{proof}
@@ -166,6 +176,7 @@ The result follows by combining $a_1 = a_1'$ and the induction hypothesis applie
 \begin{lemma}\label{lem:HM_inv_pm_one}
 \uses{def:HM_inv}
 \lean{QuadraticForm.HasseMinkoskiInvariant.eq_one_or_neg_one}
+\leanok
 For every quadratic form $f$, we have $\epsilon(f) = \pm 1$.
 \end{lemma}
 \begin{proof}
@@ -308,7 +319,6 @@ Let $v \in S$. Since $f_v$ represents $0$, there exists $c_v \in \Q_v^\times$ wh
 By \ref{thm:padic_squares_open}, the squares of $\Q_p^\times$ form an open set. Combining this with the approximation theorem \ref{lem:approx_thm}, we deduce the existence of $x_1, x_2 \in \Q^\times$ such that, denoting $c := h(x_1, x_2)$, one has $c/c_v \in {\Q_v^\times}^2$ for all $v \in S$.
 
 Consider the form $f_1 := cZ^2 - g$. For each $v \in S$, $g$ represents $c_v$ in $\Q_v$, and hence also $c$ because $c/c_v \in {\Q_v^\times}^2$, hence $f_1$ represents $0$ in $\Q_v$. For $v \notin S$, the coefficients $-a_3, \dots, -a_n$ of $g$ are $v$-adic units, so the discriminant $d_v(g)$ is a $v$-adic unit and $\epsilon_v(g)=1$.
-
 
 In all cases, $f_q$ represents $0$ in all $\Q_v$, and since the rank of $f$ is $n-1$, the inductive hypothesis shows that $f_1$ represents $0$ in $\Q$, or equivalently, $g$ represents $c$ in $\Q$. But $h$ also represents $c$, so $f$ represents $0$.
 
