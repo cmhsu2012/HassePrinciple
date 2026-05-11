@@ -8,60 +8,361 @@
 
 \section{Hilbert symbol over a field}
 
-\begin{definition}\label{def:Hilbert_symbol}\lean{HilbertSymbol}
-	%TODO (Hilbert symbol, III.1.1)
+\begin{definition}
+	\label{def:Hilbert_symbol}
+	\lean{HilbertSymbol}
+	\leanok
 	Let $k$ be a field and $a, b \in k^\times$. The \emph{Hilbert symbol} $(a, b)_k$ is defined as follows: if there exist $x, y, z \in k$, not all zero, such that $z^2 = ax^2 + by^2$, then $(a, b)_k = 1$; otherwise, $(a, b)_k = -1$.
 \end{definition}
 
+
+\subsection{Basic properties of the Hilbert symbol}
+
 The Hilbert symbols has the following properties, useful for computing it in practice.
 
-\begin{lemma}\label{lem:well_defined_up_to_squares}\lean{well_defined_up_to_squares}
+\begin{lemma}
+	\label{lem:well_defined_up_to_squares}
+	\lean{well_defined_up_to_squares}
+	\uses{def:Hilbert_symbol}
+	\leanok
 	Let $a, b, a', b' \in k^\times$. Then $(a,b)_k = (a a'^2, b b'^2)_k$.
 \end{lemma}
 
 The following definition and lemma use \code{QuadraticAlgebra} from \mathlib.
-\begin{definition}\label{def:kb}\lean{kb}
-	For $b \in k^\times$, we denote by $k(\sqrt{b})$ the field extension of $k$ obtained by adjoining	a square root of $b$.
+
+\begin{definition}
+	\label{def:kb}
+	\lean{kb}
+	\leanok
+	For $b \in k^\times$, we denote by $k(\sqrt{b})$ the field extension of $k$ obtained by adjoining
+	a square root of $b$.
 \end{definition}
 
-\begin{lemma}\label{lem:eq_one_iff}\lean{eq_one_iff}
-	Let $a, b \in k^\times$. Then $(a, b)_k = 1$ if and only if there exists $t \in k(\sqrt{b})$ such that $a = N_{k(\sqrt{b})/k}(t)$.
+\begin{lemma}
+	\label{lem:eq_one_iff}
+	\lean{eq_one_iff}
+	\uses{def:Hilbert_symbol}
+	\leanok
+	Let $a, b \in k^\times$. Then $(a, b)_k = 1$ if and only if there exists $t \in k(\sqrt{b})$ such
+	that $a = N_{k(\sqrt{b})/k}(t)$.
 \end{lemma}
 
-\begin{lemma}\label{lem:sym}\lean{sym}
+\begin{lemma}
+	\label{lem:sym}
+	\lean{sym}
+	\uses{def:Hilbert_symbol}
+	\leanok
 	For $a, b \in k^\times$, we have $(a, b)_k = (b, a)_k$.
 \end{lemma}
 
-\begin{lemma}\label{lem:one_of_square}\lean{one_of_square}
+\begin{lemma}
+	\label{lem:one_of_square}
+	\lean{one_of_square}
+	\uses{def:Hilbert_symbol}
+	\leanok
 	Let $a, c \in k^\times$. Then $(a, c^2)_k = 1$.
 \end{lemma}
 
-\begin{lemma}\label{lem:one_of_neg_self}\lean{one_of_neg_self}
+\begin{lemma}
+	\label{lem:one_of_neg_self}
+	\lean{one_of_neg_self}
+	\uses{def:Hilbert_symbol}
+	\leanok
 	For $a \in k^\times$, we have $(a, -a)_k = 1$.
 \end{lemma}
 
-\begin{lemma}\label{lem:one_of_one_minus_self}\lean{one_of_one_minus_self}
+\begin{lemma}
+	\label{lem:one_of_one_minus_self}
+	\lean{one_of_one_minus_self}
+	\uses{def:Hilbert_symbol}
+	\leanok
 	Let $a \in k^\times$ with $a \ne 1$. Then $(a, 1 - a)_k = 1$.
 \end{lemma}
 
-\begin{lemma}\label{lem:of_mul}\lean{of_mul}
+\begin{lemma}
+	\label{lem:of_mul}
+	\lean{of_mul}
+	\uses{def:Hilbert_symbol}
+	\leanok
 	Let $a, a', b \in k^\times$ and assume that $(a, b)_k = 1$. Then $(a a', b)_k = (a', b)_k$.
 \end{lemma}
 
-\begin{lemma}\label{lem:of_neg_mul}\lean{of_neg_mul}
+\begin{lemma}
+	\label{lem:of_neg_mul}
+	\lean{of_neg_mul}
+	\uses{def:Hilbert_symbol}
+	\leanok
 	Let $a, b \in k^\times$. Then $(a, -ab)_k = (a, b)_k$.
 \end{lemma}
 
-\begin{lemma}\label{lem:of_minus_self_mul}\lean{of_minus_self_mul}
+\begin{lemma}
+	\label{lem:of_minus_self_mul}
+	\lean{of_minus_self_mul}
+	\uses{def:Hilbert_symbol}
+	\leanok
 	Let $a, b \in k^\times$ with $a \ne 1$. Then $(a, (1-a)b)_k = (a, b)_k$.
 \end{lemma}
 
+
+\subsection{Computation of the Hilbert symbol in the real and $p$-adic cases}
 We now specialize to the case where $k$ is either $\R$ or $\Q_p$ for some prime $p$. In this case, the Hilbert symbol can be computed explicitly.
 
-\begin{theorem}\label{thm:real}\lean{real}
+\begin{theorem}
+	\label{thm:real}
+	\lean{real}
+	\uses{def:Hilbert_symbol}
+	\leanok
 	Let $a, b \in \R^\times$. Then $(a, b)_{\R} = 1$ if and only if $a > 0$ or $b > 0$; otherwise $(a, b)_{\R} = -1$.
 \end{theorem}
 
-\begin{lemma}\label{lem:approx_thm}
-TODO (Lemma 2 in III.2.2)
+The following uses the \code{mathlib} code for $p$-adic numbers and integers, as well as the
+integration in \code{Padic.Legendre}.
+
+For the statement of the theorem in the $p$-adic case, we need the following definitions.
+\begin{definition}
+	\label{def:epsilon}
+	\lean{\epsilon}
+	\leanok
+	Let $u \in (\Z_2)^\times$. We define $\epsilon(u)$ to be the class modulo $2$ of $\dfrac{u-1}{2}$.
+\end{definition}
+
+\begin{definition}
+	\label{def:omega}
+	\lean{\omega}
+	\leanok
+	Let $u \in (\Z_2)^\times$. We define $\omega(u)$ to be the class modulo $2$ of $\dfrac{u^2-1}{8}$.
+\end{definition}
+
+\begin{lemma}
+	\label{lem:is_unit_odd_p}
+	\lean{is_unit_odd_p}
+	\leanok
+Let $p$ be an odd prime. Then its image in $\Z_2$ is a unit.
 \end{lemma}
+
+\begin{definition}
+	\label{def:p_in_Q2}
+	\lean{p_in_Q2}
+	\leanok
+Let $p$ be an odd prime. Then we define $p_{in_Q2} \in (\Z_2)^\times$ as the image of $p$ in
+$(\Z_2)^\times$.
+\end{definition}
+
+For the proof, we will need the following lemma.
+\begin{lemma}
+	\label{lem:nontrivialzero}
+	\lean{nontrivialzero}
+	\leanok
+Let $p$ be a prime and let $v \in (\Q_p)^\times$. Let $x, y, z \in \Q_p$ be such that
+$(x, y, z) \ne (0, 0, 0)$ and $z^2 - p x^2 - v y^2 = 0$. Then there exist
+$z', y' \in (\Q_p)^\times$ and $x' \in \Z_p$ such that $(z', y', x')$ is a nontrivial solution to
+the same equation.
+\end{lemma}
+
+We are now ready to compute the Hilbert symbol $(x,y)$ in the $p$-adic case.
+We split the statement and the proof of the theorem for the $p$-adic into the cases where $p$ is odd
+and where $p = 2$, and for each we first consider separately the cases where the valuations of $x$
+and $y$ are both $0$, both $1$, or one of them is $0$ and the other is $1$.
+
+Everywhere in the following, we assume that $x, y \in (\Q_p)^\times$, and denote by $v_x$ and $v_y$
+their valuations, and by $u_x$ and $u_y$ their unit parts.
+
+\begin{lemma}
+	\label{lem:padic_odd_p_case00}
+	\lean{padic_odd_p_case00}
+	\uses{def:Hilbert_symbol, def:padicUnitPart, def:epsilon, def:legp}
+	\leanok
+Let $p$ be an odd prime and let $x,y \in (\Q_p)^\times$. Assume that $v_x = v_y = 0$.
+Then $(x,y) = (-1)^{v_x v_y\epsilon(p)}\left(\dfrac{u_x}{p}\right) \left(\dfrac{u_y}{p}\right)$,
+where $\left(\dfrac{\cdot}{p}\right)$ is the Legendre symbol.
+\end{lemma}
+
+\begin{lemma}
+	\label{lem:padic_odd_p_case10}
+	\lean{padic_odd_p_case10}
+	\uses{def:Hilbert_symbol, def:padicUnitPart, def:epsilon, def:legp}
+	\leanok
+Let $p$ be an odd prime and let $x,y \in (\Q_p)^\times$. Assume that $v_x = 1$ and $v_y = 0$.
+Then $(x,y) = (-1)^{v_x v_y\epsilon(p)}\left(\dfrac{u_x}{p}\right) \left(\dfrac{u_y}{p}\right)$,
+where $\left(\dfrac{\cdot}{p}\right)$ is the Legendre symbol.
+\end{lemma}
+
+\begin{lemma}
+	\label{lem:padic_odd_p_case11}
+	\lean{padic_odd_p_case11}
+	\uses{def:Hilbert_symbol, def:padicUnitPart, def:epsilon, def:legp}
+	\leanok
+Let $p$ be an odd prime and let $x,y \in (\Q_p)^\times$. Assume that $v_x = v_y = 1$.
+Then $(x,y) = (-1)^{v_x v_y\epsilon(p)}\left(\dfrac{u_x}{p}\right) \left(\dfrac{u_y}{p}\right)$,
+where $\left(\dfrac{\cdot}{p}\right)$ is the Legendre symbol.
+\end{lemma}
+
+\begin{theorem}
+	\label{thm:padic_odd_p}
+	\lean{padic_odd_p}
+	\uses{def:Hilbert_symbol, def:padicUnitPart, def:epsilon, def:legp}
+	\leanok
+Let $p$ be an odd prime and let $x,y \in (\Q_p)^\times$. Then
+\[(x,y) = (-1)^{v_x v_y\epsilon(p)}\left(\dfrac{u_x}{p}\right) \left(\dfrac{u_y}{p}\right),\]
+where $\left(\dfrac{\cdot}{p}\right)$ is the Legendre symbol.
+\end{theorem}
+
+We proceed similarly for the case $p = 2$.
+
+\begin{lemma}
+	\label{lem:padic_2_case00}
+	\lean{padic_2_case00}
+	\uses{def:Hilbert_symbol, def:padicUnitPart, def:epsilon, def:omega}
+	\leanok
+Let $x,y \in (\Q_2)^\times$. Assume that $v_x = v_y = 0$.
+Then $(x,y) = (-1)^{\epsilon(u_x)*\epsilon(u_y) + v_x * \omega(u_y) + v_y * \omega(u_x)}$.
+\end{lemma}
+
+\begin{lemma}
+	\label{lem:padic_2_case10}
+	\lean{padic_2_case10}
+	\uses{def:Hilbert_symbol, def:padicUnitPart, def:epsilon, def:omega}
+	\leanok
+Let $x,y \in (\Q_2)^\times$. Assume that $v_x = 1$ and $v_y = 0$.
+Then $(x,y) = (-1)^{\epsilon(u_x)*\epsilon(u_y) + v_x * \omega(u_y) + v_y * \omega(u_x)}$.
+\end{lemma}
+
+\begin{lemma}
+	\label{lem:padic_2_case11}
+	\lean{padic_2_case11}
+	\uses{def:Hilbert_symbol, def:padicUnitPart, def:epsilon, def:omega}
+	\leanok
+Let $x,y \in (\Q_2)^\times$. Assume that $v_x = v_y = 1$.
+Then $(x,y) = (-1)^{\epsilon(u_x)*\epsilon(u_y) + v_x * \omega(u_y) + v_y * \omega(u_x)}$.
+\end{lemma}
+
+\begin{theorem}
+	\label{thm:padic_2}
+	\lean{padic_2}
+	\uses{def:Hilbert_symbol, def:padicUnitPart, def:epsilon, def:omega}
+	\leanok
+Let $x,y \in (\Q_2)^\times$. Then
+\[(x,y) = (-1)^{\epsilon(u_x)*\epsilon(u_y) + v_x * \omega(u_y) + v_y * \omega(u_x)}.\]
+\end{theorem}
+
+\subsection{Global properties of the Hilbert symbol}
+
+This section uses the \code{mathlib} function \code{Nat.nth Nat.Prime}. The main goal is to prove
+the product formula for the Hilbert symbol, which states that for every $a, b \in \Q^\times$, we have
+\[\prod_{v \in V} (a, b)_v = 1.\]
+Here, $V$ is the union of the set of prime numbers and the symbol $\infty$, and for each prime $p$,
+the symbol $(a, b)_p$ is the Hilbert symbol computed in $\Q_p$, while $(a, b)_\infty$ is the Hilbert
+symbol computed in $\R$. Prior to stating the formula, we need to show that the Hilbert
+symbol is $1$ for all but finitely many $v \in V$.
+
+\begin{definition}
+	\label{def:at_p}
+	\lean{at_p}
+	\uses{def:Hilbert_symbol}
+	\leanok
+Let $p$ be a prime number. For $a, b \in \Q^\times$, we define $(a, b)_p$ as the Hilbert symbol
+$(a,b)_{\Q_p}$ computed in $\Q_p$.
+\end{definition}
+
+\begin{definition}
+	\label{def:at_infty}
+	\lean{at_infty}
+	\uses{def:Hilbert_symbol}
+	\leanok
+Let $a, b \in \Q^\times$. We define $(a, b)_\infty$ as the Hilbert symbol $(a,b)_{\R}$ computed in $\R$.
+\end{definition}
+
+\begin{theorem}
+	\label{thm:almost_all_one}
+	\lean{almost_all_one}
+	\uses{def:Hilbert_symbol,def:at_p, def:at_infty}
+	\leanok
+Let $a, b \in \Q^\times$. Then there exists a finite set $S$ of prime numbers such that
+$(a, b)_p = 1$ for all primes $p \notin S$.
+\end{theorem}
+
+Notice that it is equivalent to stating that for every $a, b \in \Q^\times$, we have $(a, b)_v = 1$
+for all but finitely many $v \in V$.
+
+In order to state the product formula, it is convenient to introduce the following notation.
+\begin{definition}
+	\label{def:hilbertSym_fun}
+	\lean{hilbertSym_fun}
+	\uses{def:Hilbert_symbol, def:at_p, def:at_infty}
+	\leanok
+Let $a, b \in \Q^\times$. The Hilbert symbol function of the pair $(a,b)$ is
+\[
+\rm{hilbertSym\_fun}: \N \to \Z^\times
+\]
+sending each $n$ to the Hilbert symbol of the pair $(a,b)$ at the $n$-th prime.
+\end{definition}
+
+By Theorem \ref{thm:almost_all_one}, this function has finite support.
+
+\begin{definition}
+	\label{def:hilbertSym_support}
+	\lean{hilbertSym_support}
+	\uses{def:Hilbert_symbol, def:at_p, def:at_infty, def:hilbertSym_fun}
+	\leanok
+Let $a, b \in \Q^\times$. The support of the Hilbert symbol function of the pair $(a,b)$ is
+\[
+\rm{hilbertSym\_support}(a, b) := \{n \in \N \mid \ hilbertSym\_fun(a, b)(n) \neq 1\}.
+\]
+\end{definition}
+
+Notice that, in the Lean code, this is any superset of the minimal support defined here.
+
+\begin{theorem}
+	\label{thm:product_formula}
+	\lean{product_formula}
+	\uses{def:Hilbert_symbol, def:at_p, def:at_infty, def:hilbertSym_fun, def:hilbertSym_support}
+	\leanok
+Let $a, b \in \Q^\times$. Then the product of the Hilbert symbols of the pair $(a,b)$ at all places
+is $1$.
+\end{theorem}
+
+\subsection{Approximation theorem}
+
+The following is a generalization of the Chinese Remainder Theorem that is in \code{mathlib}.
+
+\begin{theorem}
+	\label{thm:chineseRemainder}
+	\lean{chineseRemainder}
+	\leanok
+Let $a_1,\dots,a_n$ be integer numbers and let $m_1,\dots,m_n$ be pairwise coprime positive
+integers. Then there exists an integer $x$ such that $x \equiv a_i \pmod{m_i}$ for all
+$i = 1, \dots, n$.
+\end{theorem}
+
+For the statement of the approximation theorem, it is convenient to define the following product
+space.
+
+\begin{definition}
+	\label{def:Prod_over_S}
+	\lean{Prod_over_S}
+	\leanok
+Let $S$ be a finite subset of the set of prime numbers. We denote by $\prod_{p \in S} \Q_p$
+the product of the fields $\Q_p$ for $p \in S$. The set $\rm{Prod\_over\_S} (S)$ is defined as the
+product of $\R$ and the factors $\Q_p$ for $p \in S$.
+\end{definition}
+
+N.B. more precisely, in the Lean code, S is a subset of the natural numbers, and the product is
+over the $n$-th prime for $n \in S$.
+
+
+\begin{definition}
+	\label{def:finite_embedding}
+	\lean{finite_embedding}
+	\uses{def:Prod_over_S}
+	\leanok
+We define the finite embedding of $\Q$ into $\rm{Prod\_over\_S} (S)$ as the natural diagonal map.
+\end{definition}
+
+\begin{theorem}\label{thm:approximation}%todo change references
+	\lean{approximation}
+	\uses{def:Prod_over_S}
+	The image of the finite embedding of $\Q$ into $\rm{Prod\_over\_S} (S)$ is dense with respect to
+	the product topology. More concretely, for every $\epsilon > 0$ and every
+	$y \in \rm{Prod\_over\_S} (S)$, there exists $x \in \Q$ such that the distance
+	between $y$ and the image of $x$ is less than $\epsilon$.
+\end{theorem}
