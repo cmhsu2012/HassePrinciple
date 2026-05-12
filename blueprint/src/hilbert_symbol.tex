@@ -105,7 +105,7 @@ The following definition and lemma use \code{QuadraticAlgebra} from \mathlib.
 \end{lemma}
 
 
-\subsection{Computation of the Hilbert symbol in the real and $p$-adic cases}
+\subsection{Local Properties}
 We now specialize to the case where $k$ is either $\R$ or $\Q_p$ for some prime $p$. In this case, the Hilbert symbol can be computed explicitly.
 
 \begin{theorem}
@@ -216,8 +216,8 @@ We proceed similarly for the case $p = 2$.
 	\lean{HilbertSymbol.padic_2_case00}
 	\uses{def:Hilbert_symbol, def:padicUnitPart, def:epsilon, def:omega}
 	\leanok
-Let $x,y \in (\Q_2)^\times$. Assume that $v_x = v_y = 0$.
-Then $(x,y) = (-1)^{\epsilon(u_x)*\epsilon(u_y) + v_x * \omega(u_y) + v_y * \omega(u_x)}$.
+Let $x,y \in (\Q_2)^\times$. Assume that $v_x = v_y = 0$. Then 
+\[(x,y) = (-1)^{\epsilon(u_x)*\epsilon(u_y) + v_x * \omega(u_y) + v_y * \omega(u_x)}.\]
 \end{lemma}
 
 \begin{lemma}
@@ -225,8 +225,8 @@ Then $(x,y) = (-1)^{\epsilon(u_x)*\epsilon(u_y) + v_x * \omega(u_y) + v_y * \ome
 	\lean{HilbertSymbol.padic_2_case10}
 	\uses{def:Hilbert_symbol, def:padicUnitPart, def:epsilon, def:omega}
 	\leanok
-Let $x,y \in (\Q_2)^\times$. Assume that $v_x = 1$ and $v_y = 0$.
-Then $(x,y) = (-1)^{\epsilon(u_x)*\epsilon(u_y) + v_x * \omega(u_y) + v_y * \omega(u_x)}$.
+Let $x,y \in (\Q_2)^\times$. Assume that $v_x = 1$ and $v_y = 0$. Then 
+\[(x,y) = (-1)^{\epsilon(u_x)*\epsilon(u_y) + v_x * \omega(u_y) + v_y * \omega(u_x)}.\]
 \end{lemma}
 
 \begin{lemma}
@@ -234,8 +234,8 @@ Then $(x,y) = (-1)^{\epsilon(u_x)*\epsilon(u_y) + v_x * \omega(u_y) + v_y * \ome
 	\lean{HilbertSymbol.padic_2_case11}
 	\uses{def:Hilbert_symbol, def:padicUnitPart, def:epsilon, def:omega}
 	\leanok
-Let $x,y \in (\Q_2)^\times$. Assume that $v_x = v_y = 1$.
-Then $(x,y) = (-1)^{\epsilon(u_x)*\epsilon(u_y) + v_x * \omega(u_y) + v_y * \omega(u_x)}$.
+Let $x,y \in (\Q_2)^\times$. Assume that $v_x = v_y = 1$. Then 
+\[(x,y) = (-1)^{\epsilon(u_x)*\epsilon(u_y) + v_x * \omega(u_y) + v_y * \omega(u_x)}.\]
 \end{lemma}
 
 \begin{theorem}
@@ -323,7 +323,7 @@ Let $a, b \in \Q^\times$. Then the product of the Hilbert symbols of the pair $(
 is $1$.
 \end{theorem}
 
-\subsection{Approximation theorem}
+\subsection{Approximation Theorem}
 
 The following is a generalization of the Chinese Remainder Theorem that is in \code{mathlib}.
 
