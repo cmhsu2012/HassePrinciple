@@ -40,7 +40,7 @@ variable (Q : QuadraticForm k V)
 
 /-- Auxiliary definition for `HasseMinkoskiInvariant`. -/
 noncomputable def HasseMinkoskiInvariantAux {n : ℕ} (w : Fin n → kˣ) : ℤ :=
-  ∏ p : Fin n × Fin n with p.1 < p.2, HilbertSymbol (w p.1 : k) (w p.2)
+  ∏ p : Fin n × Fin n with p.1 < p.2, hilbertSym (w p.1 : k) (w p.2)
 
 lemma HasseMinkoskiInvariant_aux.eq_of_equivalent {n : ℕ} {w w' : Fin n → kˣ}
     (h : (QuadraticMap.weightedSumSquares k w).Equivalent (QuadraticMap.weightedSumSquares k w')) :
@@ -91,13 +91,13 @@ variable {V : Type*} [AddCommGroup V] [Module ℚ_[p] V] [FiniteDimensional ℚ_
 
 lemma represents_zero_iff_of_rank_three (b : Basis (Fin 3) ℚ_[p] V) :
     Q.represents 0 ↔
-      HilbertSymbol (-1) (-Q.discr b) =
+      hilbertSym (-1) (-Q.discr b) =
         HasseMinkoskiInvariant (Q.nondegenerate_associated_iff.mpr hQ).1 := by
   sorry
 
 lemma represents_iff_of_rank_two (b : Basis (Fin 2) ℚ_[p] V) (a : ℚ_[p]) :
     Q.represents a ↔
-      HilbertSymbol a (-Q.discr b) =
+      hilbertSym a (-Q.discr b) =
         HasseMinkoskiInvariant (Q.nondegenerate_associated_iff.mpr hQ).1 := by
   sorry
 

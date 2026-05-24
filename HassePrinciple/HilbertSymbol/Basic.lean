@@ -17,29 +17,29 @@ public import Mathlib.NumberTheory.LSeries.PrimesInAP
 -- `k` is a field and typically will be either `ℝ` or `ℚ_[p]`, but we need less for the definition.
 
 /-- TODO -/
-noncomputable def HilbertSymbol {k : Type*} [Field k] (a b : k) : ℤ := by
+noncomputable def hilbertSym {k : Type*} [Field k] (a b : k) : ℤ := by
   classical exact if a = 0 ∨ b = 0 then 0
     else if ∃ z x y : k, (z, x, y) ≠ (0, 0, 0) ∧ z ^ 2 - a * x ^ 2 - b * y ^ 2 = 0 then 1
     else -1
 
-namespace HilbertSymbol
+namespace hilbertSym
 
 section Field
 
 variable {k : Type*} [Field k] {a b : k} (a' b' : k)
 
-/-- If `a` and `b` are nonzero, then `HilbertSymbol a b` is nonzero. -/
-lemma ne_zero_of_ne_zero (ha : a ≠ 0) (hb : b ≠ 0) : HilbertSymbol a b ≠ 0 := by
+/-- If `a` and `b` are nonzero, then `hilbertSym a b` is nonzero. -/
+lemma ne_zero_of_ne_zero (ha : a ≠ 0) (hb : b ≠ 0) : hilbertSym a b ≠ 0 := by
   sorry
 
 /-- TODO -/
 @[simp]
 lemma mul_square_eq :
-    HilbertSymbol (a * a'^2) (b * b'^2) = HilbertSymbol a b := by
+    hilbertSym (a * a'^2) (b * b'^2) = hilbertSym a b := by
   sorry
 
 /-- TODO -/
-lemma comm : HilbertSymbol a b = HilbertSymbol b a := by
+lemma comm : hilbertSym a b = hilbertSym b a := by
   sorry
 
 /-
@@ -51,36 +51,40 @@ lemma comm : HilbertSymbol a b = HilbertSymbol b a := by
 
 /-- TODO -/
 theorem eq_one_iff (ha : a ≠ 0) (hb : b ≠ 0) :
-    HilbertSymbol a b = 1 ↔ ∃ t : QuadraticAlgebra k b 0, a = QuadraticAlgebra.norm t := by
-  sorry
-
-/-- TODO -/
-theorem right_square_eq_one (ha : a ≠ 0) (hb : b ≠ 0) : HilbertSymbol a (b ^ 2) = 1 := by
+    hilbertSym a b = 1 ↔ ∃ t : QuadraticAlgebra k b 0, a = QuadraticAlgebra.norm t := by
   sorry
 
 /-- TODO -/
 @[simp]
-theorem neg_self_eq_one (ha : a ≠ 0) : HilbertSymbol a (-a) = 1 := by
-  sorry
-
-/-- TODO -/
-theorem one_minus_self_eq_one (ha0 : a ≠ 0) (ha1 : a ≠ 1) :
-    HilbertSymbol a (1 - a) = 1 := by
-  sorry
-
-/-- TODO -/
-theorem right_mul_eq_of_eq_one (hab : HilbertSymbol a b = 1) :
-    HilbertSymbol a (b * b') = HilbertSymbol a b' := by
+theorem right_square_eq_one (ha : a ≠ 0) (hb : b ≠ 0) : hilbertSym a (b ^ 2) = 1 := by
   sorry
 
 /-- TODO -/
 @[simp]
-theorem right_neg_mul : HilbertSymbol a (- (a * b)) = HilbertSymbol a b := by
+theorem right_neg_self_eq_one (ha : a ≠ 0) : hilbertSym a (-a) = 1 := by
   sorry
 
 /-- TODO -/
+@[simp]
+theorem right_one_minus_self_eq_one (ha0 : a ≠ 0) (ha1 : a ≠ 1) :
+    hilbertSym a (1 - a) = 1 := by
+  sorry
+
+/-- TODO -/
+@[simp]
+theorem right_mul_eq_of_eq_one (hab : hilbertSym a b = 1) :
+    hilbertSym a (b * b') = hilbertSym a b' := by
+  sorry
+
+/-- TODO -/
+@[simp]
+theorem right_neg_mul : hilbertSym a (- (a * b)) = hilbertSym a b := by
+  sorry
+
+/-- TODO -/
+@[simp]
 theorem right_minus_self_mul (ha : a ≠ 1) :
-    HilbertSymbol a ((1 - a) * b) = HilbertSymbol a b := by
+    hilbertSym a ((1 - a) * b) = hilbertSym a b := by
   sorry
 
 end Field
@@ -91,7 +95,7 @@ end Field
 
 /-- TODO -/
 theorem real_eq {a b : ℝ} (ha : a ≠ 0) (hb : b ≠ 0) :
-    HilbertSymbol a b = if 0 < a ∨ 0 < b then 1 else -1 := by
+    hilbertSym a b = if 0 < a ∨ 0 < b then 1 else -1 := by
   sorry
 
 open Padic PadicInt
@@ -104,27 +108,27 @@ variable {p : ℕ} [hp : Fact (Nat.Prime p)] (hp2 : p ≠ 2) {x y : (ℚ_[p])} (
 
 /-- TODO -/
 lemma padic_odd_case00 (hx0 : x.valuation = 0) (hx0 : y.valuation = 0) :
-    HilbertSymbol x y = Int.negOnePow (x.valuation * y.valuation) /- * epsilon (p2 hp2)) -/ *
+    hilbertSym x y = Int.negOnePow (x.valuation * y.valuation) /- * epsilon (p2 hp2)) -/ *
       legendreSym (unitPart (Units.mk0 x hx)) * legendreSym (unitPart (Units.mk0 y hy)) := by
   sorry
 
 /-- TODO -/
 lemma padic_odd_case10 (hx1 : valuation (x : ℚ_[p]) = 1) (hy0 : valuation (y : ℚ_[p]) = 0) :
-    HilbertSymbol x y = Int.negOnePow (valuation (x : ℚ_[p]) * valuation (y : ℚ_[p]) *
+    hilbertSym x y = Int.negOnePow (valuation (x : ℚ_[p]) * valuation (y : ℚ_[p]) *
       epsilon (p2 hp2)) * legendreSym (unitPart (Units.mk0 x hx)) *
       legendreSym (unitPart (Units.mk0 y hy)) := by
   sorry
 
 /-- TODO -/
-lemma padic_odd_p_case11 (hx0 : valuation (x : ℚ_[p]) = 1) (hy0 : valuation (y : ℚ_[p]) = 1) :
-    HilbertSymbol x y = Int.negOnePow (valuation (x : ℚ_[p]) * valuation (y : ℚ_[p]) *
+lemma padic_odd_case11 (hx0 : valuation (x : ℚ_[p]) = 1) (hy0 : valuation (y : ℚ_[p]) = 1) :
+    hilbertSym x y = Int.negOnePow (valuation (x : ℚ_[p]) * valuation (y : ℚ_[p]) *
       epsilon (p2 hp2)) * legendreSym (unitPart (Units.mk0 x hx)) *
       legendreSym (unitPart (Units.mk0 y hy)) := by
   sorry
 
 /-- TODO -/
 theorem padic_odd_eq :
-    HilbertSymbol x y = Int.negOnePow (valuation (x : ℚ_[p]) * valuation (y : ℚ_[p]) *
+    hilbertSym x y = Int.negOnePow (valuation (x : ℚ_[p]) * valuation (y : ℚ_[p]) *
       epsilon (p2 hp2)) * legendreSym (unitPart (Units.mk0 x hx)) *
       legendreSym (unitPart (Units.mk0 y hy)) := by
   sorry
@@ -139,7 +143,7 @@ variable {x y : (ℚ_[2])} (hx : x ≠ 0) (hy : y ≠ 0)
 
 /-- TODO -/
 lemma two_adic_case00 (hx0 : valuation (x : ℚ_[2]) = 0) (hy0 : valuation (y : ℚ_[2]) = 0) :
-    HilbertSymbol x y = Int.negOnePow (epsilon (unitPart (Units.mk0 x hx)) *
+    hilbertSym x y = Int.negOnePow (epsilon (unitPart (Units.mk0 x hx)) *
       epsilon (unitPart (Units.mk0 y hy)) + valuation (x : ℚ_[2]) *
       omega (unitPart (Units.mk0 y hy)) + valuation (y : ℚ_[2]) *
       omega (unitPart (Units.mk0 x hx))) := by
@@ -147,7 +151,7 @@ lemma two_adic_case00 (hx0 : valuation (x : ℚ_[2]) = 0) (hy0 : valuation (y : 
 
 /-- TODO -/
 lemma two_adic_case10 (hx0 : valuation (x : ℚ_[2]) = 1) (hy0 : valuation (y : ℚ_[2]) = 0) :
-    HilbertSymbol x y = Int.negOnePow (epsilon (unitPart (Units.mk0 x hx)) *
+    hilbertSym x y = Int.negOnePow (epsilon (unitPart (Units.mk0 x hx)) *
       epsilon (unitPart (Units.mk0 y hy)) + valuation (x : ℚ_[2]) *
       omega (unitPart (Units.mk0 y hy)) + valuation (y : ℚ_[2]) *
       omega (unitPart (Units.mk0 x hx))) := by
@@ -155,7 +159,7 @@ lemma two_adic_case10 (hx0 : valuation (x : ℚ_[2]) = 1) (hy0 : valuation (y : 
 
 /-- TODO -/
 lemma two_adic_case11 (hx0 : valuation (x : ℚ_[2]) = 1) (hy0 : valuation (y : ℚ_[2]) = 1) :
-    HilbertSymbol x y = Int.negOnePow (epsilon (unitPart (Units.mk0 x hx)) *
+    hilbertSym x y = Int.negOnePow (epsilon (unitPart (Units.mk0 x hx)) *
       epsilon (unitPart (Units.mk0 y hy)) + valuation (x : ℚ_[2]) *
       omega (unitPart (Units.mk0 y hy)) + valuation (y : ℚ_[2]) *
       omega (unitPart (Units.mk0 x hx))) := by
@@ -163,7 +167,7 @@ lemma two_adic_case11 (hx0 : valuation (x : ℚ_[2]) = 1) (hy0 : valuation (y : 
 
 /-- TODO -/
 theorem two_adic_eq :
-    HilbertSymbol x y = Int.negOnePow (epsilon (unitPart (Units.mk0 x hx)) *
+    hilbertSym x y = Int.negOnePow (epsilon (unitPart (Units.mk0 x hx)) *
       epsilon (unitPart (Units.mk0 y hy)) + valuation (x : ℚ_[2]) *
       omega (unitPart (Units.mk0 y hy)) + valuation (y : ℚ_[2]) *
       omega (unitPart (Units.mk0 x hx))) := by
@@ -180,15 +184,14 @@ open Nat
 /-- For `a, b : ℚ`, and for a prime `p : ℕ`, `atP a b p` denotes the Hilbert symbol of `a` and `b`
 computed in `ℚ_[p]`. -/
 noncomputable abbrev atP (a b : ℚ) (p : ℕ) [hp : Fact (Nat.Prime p)] : ℤ :=
-  HilbertSymbol (a : ℚ_[p]) (b : ℚ_[p])
+  hilbertSym (a : ℚ_[p]) (b : ℚ_[p])
 
 /-- TODO -/
-noncomputable abbrev atInfty (a b : ℚ) : ℤ := HilbertSymbol (a : ℝ) (b : ℝ)
+noncomputable abbrev atInfty (a b : ℚ) : ℤ := hilbertSym (a : ℝ) (b : ℝ)
 
 /-- TODO -/
-scoped instance fact_prime_nth_prime (n : ℕ) : Fact (Nat.Prime (Nat.nth Nat.Prime n)) := by
-  rw [fact_iff]
-  exact prime_nth_prime n
+scoped instance fact_prime_nth_prime (n : ℕ) : Fact (Nat.Prime (Nat.nth Nat.Prime n)) :=
+  fact_iff.mpr (Nat.prime_nth_prime n)
 
 /-- For all but finitely many primes `p`, the Hilbert symbol of `a` and `b` at `p` is `1`. -/
 theorem almost_all_one (a b : ℚˣ) :
@@ -196,8 +199,8 @@ theorem almost_all_one (a b : ℚˣ) :
   sorry
 
 /-- TODO -/
-theorem product_formula (a b : ℚˣ) :
+theorem prod_eq_one (a b : ℚˣ) :
     atInfty a b * ∏ᶠ (n : ℕ), atP a b (Nat.nth Nat.Prime n) = 1 := by
   sorry
 
-end HilbertSymbol
+end hilbertSym

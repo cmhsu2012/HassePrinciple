@@ -36,11 +36,16 @@ namespace Padic
 variable {p : ℕ} [Fact (Nat.Prime p)] (x : ℚ_[p]ˣ)
 
 /-- TODO -/
-lemma norm_unitPart_eq_one : ‖(x : ℚ_[p]) * p ^ (- valuation x.val)‖ = 1 := by
+lemma norm_mul_pow_neg_valuation_eq_one : ‖(x : ℚ_[p]) * p ^ (- valuation x.val)‖ = 1 := by
   sorry
 
 /-- TODO -/
-noncomputable def unitPart : ℤ_[p]ˣ := PadicInt.mkUnits (norm_unitPart_eq_one x)
+noncomputable def unitPart : ℤ_[p]ˣ :=
+  PadicInt.mkUnits (norm_mul_pow_neg_valuation_eq_one x)
+
+lemma map_unitPart (x : ℚ_[p]ˣ) :
+    Units.map (algebraMap ℤ_[p] ℚ_[p]) (unitPart x) = x := by
+  sorry
 
 /-- TODO -/
 lemma norm_natCast_eq_one_of_ne_two {n : ℕ} (hn : n ≠ 2) : ‖(n : ℚ_[2])‖ = 1 := by

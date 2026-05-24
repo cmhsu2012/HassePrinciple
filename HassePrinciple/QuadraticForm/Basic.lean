@@ -5,6 +5,7 @@ Authors: Nirvana Coppola, María Inés de Frutos-Fernández
 -/
 module
 
+public import Mathlib.Algebra.Squarefree.Basic
 public import Mathlib.LinearAlgebra.QuadraticForm.Prod
 public import Mathlib.LinearAlgebra.QuadraticForm.Radical
 public import Mathlib.LinearAlgebra.QuadraticForm.TensorProduct
@@ -20,13 +21,19 @@ variable {K V : Type*} [Field K] [Invertible 2] [AddCommGroup V] [Module K V]
 
 theorem equivalent_weightedSumSquares' (Q : QuadraticForm K V) :
     ∃ (w : Fin (Module.finrank K V) → K), w (0 : Fin (Module.finrank K V)) = 1 ∧
-      QuadraticMap.Equivalent Q (QuadraticMap.weightedSumSquares K w) := by
+      Q.Equivalent (QuadraticMap.weightedSumSquares K w) := by
   sorry
 
 theorem equivalent_weightedSumSquares_units_of_nondegenerate
     {Q : QuadraticForm K V} (hQ : Q.Nondegenerate) :
     ∃ (w : Fin (Module.finrank K V) → Kˣ), w (0 : Fin (Module.finrank K V)) = 1 ∧
-      QuadraticMap.Equivalent Q (QuadraticMap.weightedSumSquares K w) := by
+      Q.Equivalent (QuadraticMap.weightedSumSquares K w) := by
+  sorry
+
+theorem equivalent_weightedSumSquares_squarefree_units_of_nondegenerate
+    {Q : QuadraticForm K V} (hQ : Q.Nondegenerate) :
+    ∃ (w : Fin (Module.finrank K V) → Kˣ), w (0 : Fin (Module.finrank K V)) = 1 ∧
+      ∀ n, Squarefree (w n) ∧ Q.Equivalent (QuadraticMap.weightedSumSquares K w) := by
   sorry
 
 

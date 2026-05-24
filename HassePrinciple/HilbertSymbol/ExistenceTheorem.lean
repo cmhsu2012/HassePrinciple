@@ -12,7 +12,7 @@ public import HassePrinciple.HilbertSymbol.Basic
 -/
 @[expose] public section
 
-namespace HilbertSymbol
+namespace hilbertSym
 
 -- TODO: descriptive name
 /-- TODO -/
@@ -21,8 +21,8 @@ theorem existence {I : Type*} [Finite I] (a : I → ℚˣ) (efin : I × ℕ → 
       einf i = atInfty x (a i) ↔
       ∃ S : Finset ℕ, ∀ n , n ∉ S → efin (i, n) = 1 ∧
         ∀ i : I, einf i * ∏ (n ∈ S), efin (i, n) = 1 ∧
-        ∀ n : ℕ, ∃ xn : ℚ_[Nat.nth Nat.Prime n], efin (i, n) = HilbertSymbol xn (a i) ∧
-          ∃ xr : ℝ, einf i = HilbertSymbol xr (a i) := by
+        ∀ n : ℕ, ∃ xn : ℚ_[Nat.nth Nat.Prime n], efin (i, n) = hilbertSym xn (a i) ∧
+          ∃ xr : ℝ, einf i = hilbertSym xr (a i) := by
   sorry
 
-end HilbertSymbol
+end hilbertSym
