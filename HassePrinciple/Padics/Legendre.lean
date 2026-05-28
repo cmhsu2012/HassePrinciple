@@ -62,7 +62,7 @@ theorem at_one : legendreSym (1 : ℤ_[p]) = 1 := by
 
 /-- The Legendre symbol is multiplicative in `a` for `p` fixed. -/
 protected theorem mul : legendreSym (a * b) = legendreSym a * legendreSym b := by
-  simp [legendreSym, _root_.legendreSym, zmodRepr_mul]
+  simp [legendreSym, _root_.legendreSym, zmodRepr_mul, map_mul]
 
 /-- The Legendre symbol is a homomorphism of monoids with zero. -/
 @[simps]

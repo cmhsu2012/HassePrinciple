@@ -51,8 +51,8 @@ lemma comm : hilbertSym a b = hilbertSym b a := by
 /- May make sense to split in two lemmas, one for `QuadraticAlgebra k b 0 = k` and the other for
   `QuadraticAlgebra k b 0 ≠ k`. -/
 
-/-- The Hilbert symbol of a and b (both nonzero) equals 1 if and only if a is a norm from the quadratic algebra
-`QuadraticAlgebra k b 0`. -/
+/-- The Hilbert symbol of a and b (both nonzero) equals 1 if and only if a is a norm from the
+  quadratic algebra `QuadraticAlgebra k b 0`. -/
 theorem eq_one_iff (ha : a ≠ 0) (hb : b ≠ 0) :
     hilbertSym a b = 1 ↔ ∃ t : QuadraticAlgebra k b 0, a = QuadraticAlgebra.norm t := by
   sorry
@@ -123,37 +123,37 @@ section odd
 variable {p : ℕ} [hp : Fact (Nat.Prime p)] (hp2 : p ≠ 2) {x y : (ℚ_[p])} (hx : x ≠ 0) (hy : y ≠ 0)
 
 /-- Main theorem for odd p, case v(x)=0, v(y)=0. -/
-private lemma padic_odd_case00 (hx0 : x.valuation = 0) (hy0 : y.valuation = 0) :
-    (hilbertSym x y : ℚ) = Int.negOnePow (valuation (x : ℚ_[p]) * valuation (y : ℚ_[p]) *
-      epsilon (p2 hp2)) * (PadicInt.legendreSym p (unitPart (Units.mk0 x hx))) ^
-      (valuation (y : ℚ_[p])) * (PadicInt.legendreSym p (unitPart (Units.mk0 y hy))) ^
-      (valuation (x : ℚ_[p]))  := by
+lemma padic_odd_case00 (hx0 : x.valuation = 0) (hy0 : y.valuation = 0) :
+    (hilbertSym x y : ℚ) =
+      Int.negOnePow (valuation (x : ℚ_[p]) * valuation (y : ℚ_[p]) * epsilon (p2 hp2)) *
+      (PadicInt.legendreSym (unitPart (Units.mk0 x hx) : ℤ_[p])) ^ (valuation (y : ℚ_[p])) *
+      (PadicInt.legendreSym (unitPart (Units.mk0 y hy) : ℤ_[p])) ^ (valuation (x : ℚ_[p]))  := by
   sorry
 
 /-- Main theorem for odd p, case v(x)=1, v(y)=0. -/
-private lemma padic_odd_case10 (hx1 : valuation (x : ℚ_[p]) = 1) (hy0 : valuation (y : ℚ_[p]) = 0) :
-    (hilbertSym x y : ℚ) = Int.negOnePow (valuation (x : ℚ_[p]) * valuation (y : ℚ_[p]) *
-      epsilon (p2 hp2)) * (PadicInt.legendreSym p (unitPart (Units.mk0 x hx))) ^
-      (valuation (y : ℚ_[p])) * (PadicInt.legendreSym p (unitPart (Units.mk0 y hy))) ^
-      (valuation (x : ℚ_[p]))  := by
+lemma padic_odd_case10 (hx1 : valuation (x : ℚ_[p]) = 1) (hy0 : valuation (y : ℚ_[p]) = 0) :
+    (hilbertSym x y : ℚ) =
+      Int.negOnePow (valuation (x : ℚ_[p]) * valuation (y : ℚ_[p]) * epsilon (p2 hp2)) *
+      (PadicInt.legendreSym (unitPart (Units.mk0 x hx) : ℤ_[p])) ^ (valuation (y : ℚ_[p])) *
+      (PadicInt.legendreSym (unitPart (Units.mk0 y hy) : ℤ_[p])) ^ (valuation (x : ℚ_[p]))  := by
   sorry
 
 /-- Main theorem for odd p, case v(x)=1, v(y)=1. -/
-private lemma padic_odd_case11 (hx1 : valuation (x : ℚ_[p]) = 1) (hy1 : valuation (y : ℚ_[p]) = 1) :
-    (hilbertSym x y : ℚ) = Int.negOnePow (valuation (x : ℚ_[p]) * valuation (y : ℚ_[p]) *
-      epsilon (p2 hp2)) * (PadicInt.legendreSym p (unitPart (Units.mk0 x hx))) ^
-      (valuation (y : ℚ_[p])) * (PadicInt.legendreSym p (unitPart (Units.mk0 y hy))) ^
-      (valuation (x : ℚ_[p]))  := by
+lemma padic_odd_case11 (hx1 : valuation (x : ℚ_[p]) = 1) (hy1 : valuation (y : ℚ_[p]) = 1) :
+    (hilbertSym x y : ℚ) =
+    Int.negOnePow (valuation (x : ℚ_[p]) * valuation (y : ℚ_[p]) * epsilon (p2 hp2)) *
+      (PadicInt.legendreSym (unitPart (Units.mk0 x hx) : ℤ_[p])) ^ (valuation (y : ℚ_[p])) *
+      (PadicInt.legendreSym (unitPart (Units.mk0 y hy) : ℤ_[p])) ^ (valuation (x : ℚ_[p]))  := by
   sorry
 
 /-- If p is an odd prime and x, y are nonzero in ℚ_[p], then the Hilbert symbol of x and y equals
 `(-1) ^ v(x) * v(y) * ε(p) ` times the product of the Legendre symbol of the unit part of x to v(y)
 times the Legendre symbol of the unit part of y to v(x). -/
 theorem padic_odd_eq :
-    (hilbertSym x y : ℚ) = Int.negOnePow (valuation (x : ℚ_[p]) * valuation (y : ℚ_[p]) *
-      epsilon (p2 hp2)) * (PadicInt.legendreSym p (unitPart (Units.mk0 x hx))) ^
-      (valuation (y : ℚ_[p])) * (PadicInt.legendreSym p (unitPart (Units.mk0 y hy))) ^
-      (valuation (x : ℚ_[p])) := by
+    (hilbertSym x y : ℚ) =
+      Int.negOnePow (valuation (x : ℚ_[p]) * valuation (y : ℚ_[p]) * epsilon (p2 hp2)) *
+      (PadicInt.legendreSym (unitPart (Units.mk0 x hx) : ℤ_[p])) ^ (valuation (y : ℚ_[p])) *
+      (PadicInt.legendreSym (unitPart (Units.mk0 y hy)  : ℤ_[p])) ^ (valuation (x : ℚ_[p])) := by
   sorry
 
 end odd
