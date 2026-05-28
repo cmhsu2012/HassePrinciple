@@ -15,6 +15,19 @@ public import Mathlib.NumberTheory.LSeries.PrimesInAP
 
 @[expose] public section
 
+-- Notation:
+namespace PadicInt
+
+/-- epsilon(u) is the class modulo 2 of (u-1)/2. -/
+noncomputable abbrev epsilon (u : (PadicInt 2)ˣ) : ℤ :=
+  if (u.val).appr 2 % 4 = 1 then 0 else 1
+
+/-- omega(u) is the class modulo 2 of (u^2-1)/8. -/
+noncomputable abbrev omega (u : (PadicInt 2)ˣ) : ℤ :=
+  if (u.val).appr 3 % 8 = 1 ∨ (u.val).appr 3 % 8 = 7 then 0 else 1
+
+end PadicInt
+
 -- `k` is a field and typically will be either `ℝ` or `ℚ_[p]`, but we need less for the definition.
 
 /-- The Hilbert symbol of a and b in k is defined as 0 if either a or b is 0, and it is 1 if there
@@ -104,19 +117,6 @@ theorem real_eq {a b : ℝ} (ha : a ≠ 0) (hb : b ≠ 0) :
     hilbertSym a b = if 0 < a ∨ 0 < b then 1 else -1 := by
   sorry
 
-
-namespace PadicInt
-
-/-- epsilon(u) is the class modulo 2 of (u-1)/2. -/
-noncomputable abbrev epsilon (u : (PadicInt 2)ˣ) : ℤ :=
-  if (u.val).appr 2 % 4 = 1 then 0 else 1
-
-/-- omega(u) is the class modulo 2 of (u^2-1)/8. -/
-noncomputable abbrev omega (u : (PadicInt 2)ˣ) : ℤ :=
-  if (u.val).appr 3 % 8 = 1 ∨ (u.val).appr 3 % 8 = 7 then 0 else 1
-
-end PadicInt
-
 open Padic PadicInt
 section odd
 
@@ -163,7 +163,7 @@ section two
 variable {x y : (ℚ_[2])} (hx : x ≠ 0) (hy : y ≠ 0)
 
 /-- Main theorem for p=2, case v(x)=0, v(y)=0. -/
-private lemma two_adic_case00 (hx0 : valuation (x : ℚ_[2]) = 0) (hy0 : valuation (y : ℚ_[2]) = 0) :
+lemma two_adic_case00 (hx0 : valuation (x : ℚ_[2]) = 0) (hy0 : valuation (y : ℚ_[2]) = 0) :
     hilbertSym x y = Int.negOnePow (epsilon (unitPart (Units.mk0 x hx)) *
       epsilon (unitPart (Units.mk0 y hy)) + valuation (x : ℚ_[2]) *
       omega (unitPart (Units.mk0 y hy)) + valuation (y : ℚ_[2]) *
@@ -171,7 +171,7 @@ private lemma two_adic_case00 (hx0 : valuation (x : ℚ_[2]) = 0) (hy0 : valuati
   sorry
 
 /-- Main theorem for p=2, case v(x)=1, v(y)=0. -/
-private lemma two_adic_case10 (hx1 : valuation (x : ℚ_[2]) = 1) (hy0 : valuation (y : ℚ_[2]) = 0) :
+lemma two_adic_case10 (hx1 : valuation (x : ℚ_[2]) = 1) (hy0 : valuation (y : ℚ_[2]) = 0) :
     hilbertSym x y = Int.negOnePow (epsilon (unitPart (Units.mk0 x hx)) *
       epsilon (unitPart (Units.mk0 y hy)) + valuation (x : ℚ_[2]) *
       omega (unitPart (Units.mk0 y hy)) + valuation (y : ℚ_[2]) *
@@ -179,18 +179,20 @@ private lemma two_adic_case10 (hx1 : valuation (x : ℚ_[2]) = 1) (hy0 : valuati
   sorry
 
 /-- Main theorem for p=2, case v(x)=1, v(y)=1. -/
-private lemma two_adic_case11 (hx1 : valuation (x : ℚ_[2]) = 1) (hy1 : valuation (y : ℚ_[2]) = 1) :
+lemma two_adic_case11 (hx1 : valuation (x : ℚ_[2]) = 1) (hy1 : valuation (y : ℚ_[2]) = 1) :
     hilbertSym x y = Int.negOnePow (epsilon (unitPart (Units.mk0 x hx)) *
       epsilon (unitPart (Units.mk0 y hy)) + valuation (x : ℚ_[2]) *
       omega (unitPart (Units.mk0 y hy)) + valuation (y : ℚ_[2]) *
       omega (unitPart (Units.mk0 x hx))) := by
   sorry
 
+open PadicInt
+
 /-- If x, y are nonzero in ℚ_[2], then the Hilbert symbol of x and y equals
 `(-1) ^ (ε(u_x)ε(u_y) + v(x)ω(u_y) + v(y)ω(u_x))`, where u_x, u_y are the unit parts of x, y
 respectively. -/
 theorem two_adic_eq :
-    hilbertSym x y = Int.negOnePow (epsilon (unitPart (Units.mk0 x hx)) *
+    hilbertSym x y = Int.negOnePow (PadicInt.epsilon (unitPart (Units.mk0 x hx)) *
       epsilon (unitPart (Units.mk0 y hy)) + valuation (x : ℚ_[2]) *
       omega (unitPart (Units.mk0 y hy)) + valuation (y : ℚ_[2]) *
       omega (unitPart (Units.mk0 x hx))) := by
