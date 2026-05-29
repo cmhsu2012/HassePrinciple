@@ -3,7 +3,8 @@
 \section{Quadratic Forms}\label{sec:quadratic_form}
 
 The following definition is available in \mathlib under the name \code{QuadraticForm}:
-\begin{definition}\label{def:quadratic_form}\leanok
+\begin{definition}\label{def:quadratic_form}
+\mathlibok
 Let $M$ be a module over a commutative ring $A$. A function $f : M \to A$ is called a \emph{quadratic form} on $M$ if 
 \begin{enumerate}
 \item $f(ax) = a^2f(x)$ for all $a \in A, x \in M$,
@@ -39,7 +40,7 @@ A quadratic form $f : M \to A$ is called \emph{isotropic} if there exists a nonz
 \end{proof}
 
 
-\begin{lemma}
+\begin{lemma}\label{lem:represents_iff}
 \lean{QuadraticMap.Equivalent.represents_iff, QuadraticMap.Equivalent.isotropic_iff}
 \leanok
 \uses{def:represents, def:isotropic, lem:represents_zero}
@@ -118,7 +119,7 @@ TODO.
 \begin{proposition}\label{prop:sum_hyperbolic}
 \lean{QuadraticForm.equivalent_hyperbolic_add}
 \leanok
-\uses{def:hyperbolic, def:represents}
+\uses{lem:XY_hyperbolic, def:represents}
 Let $R$ be a commutative ring. If a quadratic form $Q$ on an $R$-module $V$ represents $0$ and is nondegenerate, then $Q$ is equivalent to $H + Q'$, where $H$ is hyperbolic. Moreover, $f$ represents all elements of $R$.
 \end{proposition}
 \begin{proof}
@@ -126,7 +127,7 @@ Fix $x \in V$ such that $Q(x) = 0$. Since $Q$ is nondegenerate, there exists $z 
 The restriction of $Q$ to the submodule $U := Rx \oplus Ry$ is the desired hyperbolic form $H$.
 \end{proof}
 
-\begin{corollary}\label{cor:represents_iff}
+\begin{corollary}\label{cor:represents_iff_sub_sub}
 \lean{QuadraticForm.represents_iff_sub_isotropic}
 \leanok	
 Let $K$ be a field, let $r \in K^\times$ and let $Q$ be a quadratic form on a free $K$-vector space $V$. Then $Q$ represents $r$ if and only if the form $Q' := Q \dotminus rZ$ represents $0$.
@@ -148,8 +149,8 @@ Let $K$ be a field and $Q$ and $Q'$ be nondegenerate quadratic forms over $K$ of
 \end{corollary}
 
 \begin{proof}
-\uses{cor:represents_iff}
-The equivalence (b) $\iff$ (c) follows from Corollary \ref{cor:represents_iff}. The implication (b) $\implies$ (a) is trivial. To show (a) $\implies (b)$, write a nontrivial zero of $Q \dotminus Q'$ in the form $(x, y)$ with $Q(x) = Q'(y)$. If $Q(x) \ne 0$, we are done. If $Q(x) = 0$, then $Q$ represents $0$ and thus by Proposition \ref{prop:sum_hyperbolic} also all elements of $K$. In particular, it represents all nonzero values taken by $Q'$. 
+\uses{cor:represents_iff_sub_sub}
+The equivalence (b) $\iff$ (c) follows from Corollary \ref{cor:represents_iff_sub_sub}. The implication (b) $\implies$ (a) is trivial. To show (a) $\implies (b)$, write a nontrivial zero of $Q \dotminus Q'$ in the form $(x, y)$ with $Q(x) = Q'(y)$. If $Q(x) \ne 0$, we are done. If $Q(x) = 0$, then $Q$ represents $0$ and thus by Proposition \ref{prop:sum_hyperbolic} also all elements of $K$. In particular, it represents all nonzero values taken by $Q'$. 
 \end{proof}
 
 \section[Quadratic Forms over the p-adics]{Quadratic Forms over $\Q_p$}\label{sec:quadratic_form_padic}
@@ -180,7 +181,7 @@ The value $\epsilon(f)$ does not depend on the choice of diagonal quadratic form
 \begin{proof}
 Let $b = (b_1, \cdots, b_n)$ be an orthogonal basis for $V$ such that $Q(x) = a_1 x_1^2 + \cdots + a_n x_n^2$ for $x = \sum x_i b_i$. We denote  $\epsilon(b) := \prod_{i < j}(a_i, a_j)$. 
 
-If $n=1$, then $\epsilon(f) = 1$. If $n=2$, then $\epsilon(f) = 1$ if and only if the form $Z^2 - a_1 X^2 - a_2 Y^2$ represents $0$. By Corollary \ref{cor:represents_iff}, this is equivalent to $a_1 X^2 + a_2 Y^2$ representing $1$, which means that there exists $v \in V$ with $Q(v) = 1$; this is independent on $b$. 
+If $n=1$, then $\epsilon(f) = 1$. If $n=2$, then $\epsilon(f) = 1$ if and only if the form $Z^2 - a_1 X^2 - a_2 Y^2$ represents $0$. By Corollary \ref{cor:represents_iff_sub_sub}, this is equivalent to $a_1 X^2 + a_2 Y^2$ representing $1$, which means that there exists $v \in V$ with $Q(v) = 1$; this is independent on $b$. 
 For $n \ge 3$ we use induction on $n$. By Theorem \ref{thm:exists_chain}, it suffices to prove that for any pair of contiguous bases $b$ and $b'$, we have $\epsilon(b) = \epsilon(b')$. 
 Thanks to the symmetry of the Hilbert symbol, $\epsilon(b)$ is unchanged by permutation of the basis elements, so we may assume that $b_1 = b_1'$.
 Then $b_1' \cdot b_1' = a_1$, and we can write 
@@ -192,6 +193,7 @@ Analogously, \[\epsilon(b') = (a_1', d(Q) a_1) \prod_{2 \le i < j} (a_i', a_j').
 The result follows by combining $a_1 = a_1'$ and the induction hypothesis applied to the orthogonal complement of $e_1$.
 \end{proof}
 
+\iffalse
 \begin{lemma}\label{lem:HM_inv_pm_one}
 \uses{def:HM_inv}
 \lean{QuadraticForm.HasseMinkoskiInvariant.eq_one_or_neg_one}
@@ -201,11 +203,12 @@ For every quadratic form $f$, we have $\epsilon(f) = \pm 1$.
 \begin{proof}
 Each term in the product is equal to $\pm 1$.
 \end{proof}
+\fi
 
 \begin{lemma}\label{lem:represents_zero_iff_rk_3}
 \lean{QuadraticForm.represents_zero_iff_of_rank_three}
 \leanok
-\uses{def:HM_inv}
+\uses{lem:HM_inv_well_defined}
 Let $k$ be either $\Q_p$ or $\R$. Let $f$ be a quadratic form of rank $3$ over $k$. Then $f$ represents $0$ if and only if $(-1, -d(f)) = \epsilon(f)$.
 \end{lemma}
 
@@ -247,9 +250,9 @@ Let $f$ be a quadratic form over $\Q$. For each $v \in V$, the injection $\Q \to
 A quadratic form $f$ with coefficients in $\Q$ is \emph{everywhere locally isotropic} if $f_v$ is isotropic for all $v \in V$.
 \end{definition}
 
-\begin{theorem}[Hasse--Minkowski]\label{thm:Hasse--Minkowski}
+\begin{theorem}[Hasse--Minkowski]\label{thm:Hasse-Minkowski}
 \lean{QuadraticForm.HasseMinkowski}
-\uses{lem:HM_of_degenerate, lem:ev_loc_isotr_of_isotr}
+\uses{lem:HM_of_degenerate, lem:ev_loc_isotr_of_isotr,  lem:isotr_of_rk_zero, lem:isotr_of_rk_one, lem:isotr_of_rk_two, lem:isotr_of_rk_three, lem:isotr_of_rk_four, lem:isotr_of_five_le_rk}
 \leanok
 Let $f$ be a quadratic form over $\Q$. Then $f$ is isotropic if and only if $f$ is everywhere locally isotropic. In other words, $f$ has a global zero if and only if $f$ has everywhere a local zero. 
 \end{theorem}
@@ -258,8 +261,8 @@ Follows from the results below.
 \end{proof}
 
 \begin{theorem}[Hasse--Minkowski]\label{lem:HM_of_degenerate}
-	\lean{QuadraticForm.HasseMinkowski}
-	\uses{lem:ev_loc_isotr_of_isotr, lem:isotr_of_rk_zero, lem:isotr_of_rk_one, lem:isotr_of_rk_two, lem:isotr_of_rk_three, lem:isotr_of_rk_four, lem:isotr_of_five_le_rk}
+	\lean{QuadraticMap.nondegenerate_of_anisotropic}
+	\uses{def:everywhere_locally_isotropic}
 	\leanok
 	Let $f$ be a degenerate quadratic form over $\Q$. Then $f$ is isotropic if and only if $f$ is everywhere locally isotropic. In other words, $f$ has a global zero if and only if $f$ has everywhere a local zero. 
 \end{theorem}
@@ -323,7 +326,7 @@ Suffices to see that every rank zero quadratic form of rank one over a field is 
 
 \begin{lemma}\label{lem:isotr_of_rk_two}
 	\lean{QuadraticForm.EverywhereLocallyIsotropic.isotropic_of_rank_two}
-	\uses{def:everywhere_locally_isotropic, lem:equiv_sum_squares}
+	\uses{def:everywhere_locally_isotropic, lem:equiv_sum_squares, lem:represents_iff}
 	\leanok
 	Let $f$ be a quadratic form over $\Q$ of rank two which is everywhere locally isotropic. Then $f$ is isotropic.
 \end{lemma}
@@ -335,7 +338,7 @@ Since $f_p$ represents $0$, $a$ is a square in $\Q_p$, so $v_p(a)$ is even. It f
 
 \begin{lemma}\label{lem:isotr_of_rk_three}
 	\lean{QuadraticForm.EverywhereLocallyIsotropic.isotropic_of_rank_three}
-	\uses{def:everywhere_locally_isotropic, lem:equiv_sum_squares, prop:common_root}
+	\uses{def:everywhere_locally_isotropic, lem:equiv_sum_squares_sqfree, prop:common_root, lem:represents_iff}
 	\leanok
 	Let $f$ be a quadratic form over $\Q$ of rank three which is everywhere locally isotropic. Then $f$ is isotropic.
 \end{lemma}
@@ -357,8 +360,8 @@ Write $b' = b'' u^2$, with $b'', u$ integers and $b''$ square-free, so $|b''| < 
 
 \begin{lemma}\label{lem:isotr_of_rk_four}
 \lean{QuadraticForm.EverywhereLocallyIsotropic.isotropic_of_rank_four}
-\uses{def:everywhere_locally_isotropic, lem:equiv_sum_squares, cor:prod_isotropic_iff, thm:product_formula,
-cor:represents_iff, lem:isotr_of_rk_three}
+\uses{def:everywhere_locally_isotropic, lem:equiv_sum_squares, cor:prod_isotropic_iff, thm:product_formula, lem:represents_iff,
+cor:represents_iff_sub_sub, lem:isotr_of_rk_three, lem:represents_iff_rk_2}
 \leanok
 Let $f$ be a quadratic form over $\Q$ of rank four which is everywhere locally isotropic. Then $f$ is isotropic.
 \end{lemma}
@@ -371,12 +374,12 @@ By Lemma \ref{lem:represents_iff_rk_2}, this is equivalent to saying that
 Since $\displaystyle \prod_{v \in V} (a, b)_v = \prod_{v \in V} (c, d)_v = 1$ by Theorem \ref{thm:product_formula}, we can deduce from Theorem \ref{thm:existence} the existence of $x \in \Q^\times$ such that 
 \[ (x, -ab)_v = (a, b)_v \quad \text{and} \quad (x, -cd)_v = (c, d)_v \: \text{ for all } v \in V. \]
 
-This shows that the form $aX_1^2 + bX_2^2 - xZ^2$ represents zero in each $\Q_v$, so by Lemma \ref{lem:isotr_of_rk_three}, it also represents $0$ in $\Q$. By Corollary \ref{cor:represents_iff}, $x$ is represented by $aX_1^2 + bX_2^2$. The same argument shows that $x$ is represented by $cX_1^2 + dX_2^2$. By applying Corollary \ref{cor:prod_isotropic_iff} again, we conclude that $f$ represents $0$.
+This shows that the form $aX_1^2 + bX_2^2 - xZ^2$ represents zero in each $\Q_v$, so by Lemma \ref{lem:isotr_of_rk_three}, it also represents $0$ in $\Q$. By Corollary \ref{cor:represents_iff_sub_sub}, $x$ is represented by $aX_1^2 + bX_2^2$. The same argument shows that $x$ is represented by $cX_1^2 + dX_2^2$. By applying Corollary \ref{cor:prod_isotropic_iff} again, we conclude that $f$ represents $0$.
 \end{proof}
 
 \begin{lemma}\label{lem:isotr_of_five_le_rk}
 \lean{QuadraticForm.EverywhereLocallyIsotropic.isotropic_of_five_le_rank}
-\uses{def:everywhere_locally_isotropic, lem:equiv_sum_squares, thm:padic_squares_open, thm:approximation, def:HM_inv, lem:isotr_of_rk_four}
+\uses{def:everywhere_locally_isotropic, lem:equiv_sum_squares, thm:padic_squares_open, thm:approximation, def:HM_inv, lem:isotr_of_rk_four, lem:represents_iff}
 \leanok
 Let $f$ be a quadratic form over $\Q$ of rank $n \ge 5$ which is everywhere locally isotropic. Then $f$ is isotropic.
 \end{lemma}
@@ -387,8 +390,8 @@ Let $v \in S$. Since $f_v$ represents $0$, there exists $c_v \in \Q_v^\times$ wh
 \[ h(x_1^v, x_2^v) = c_v = g(x_3^v, \cdots, x_n^v).\]
 By  Theorem \ref{thm:padic_squares_open}, the squares of $\Q_p^\times$ form an open set. Combining this with the approximation theorem \ref{thm:approximation}, we deduce the existence of $x_1, x_2 \in \Q^\times$ such that, denoting $c := h(x_1, x_2)$, one has $c/c_v \in {\Q_v^\times}^2$ for all $v \in S$.
 
-Consider the form $f_1 := cZ^2 - g$. For each $v \in S$, $g$ represents $c_v$ in $\Q_v$, and hence also $c$ because $c/c_v \in {\Q_v^\times}^2$, hence $f_1$ represents $0$ in $\Q_v$ by Corollary \ref{cor:represents_iff}. For $v \notin S$, the coefficients $-a_3, \dots, -a_n$ of $g$ are $v$-adic units, so the discriminant $d_v(g)$ is a $v$-adic unit and $\epsilon_v(g)=1$.
+Consider the form $f_1 := cZ^2 - g$. For each $v \in S$, $g$ represents $c_v$ in $\Q_v$, and hence also $c$ because $c/c_v \in {\Q_v^\times}^2$, hence $f_1$ represents $0$ in $\Q_v$ by Corollary \ref{cor:represents_iff_sub_sub}. For $v \notin S$, the coefficients $-a_3, \dots, -a_n$ of $g$ are $v$-adic units, so the discriminant $d_v(g)$ is a $v$-adic unit and $\epsilon_v(g)=1$.
 
-In all cases, $f_q$ represents $0$ in all $\Q_v$, and since the rank of $f$ is $n-1$, the inductive hypothesis shows that $f_1$ represents $0$ in $\Q$, or equivalently by Corollary \ref{cor:represents_iff}, $g$ represents $c$ in $\Q$. But $h$ also represents $c$, so  by Corollary \ref{cor:prod_isotropic_iff} $f$ represents $0$.
+In all cases, $f_q$ represents $0$ in all $\Q_v$, and since the rank of $f$ is $n-1$, the inductive hypothesis shows that $f_1$ represents $0$ in $\Q$, or equivalently by Corollary \ref{cor:represents_iff_sub_sub}, $g$ represents $c$ in $\Q$. But $h$ also represents $c$, so  by Corollary \ref{cor:prod_isotropic_iff} $f$ represents $0$.
 
 \end{proof}
