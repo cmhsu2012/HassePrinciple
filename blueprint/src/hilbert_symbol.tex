@@ -228,7 +228,7 @@ Let $x,y \in (\Q_2)^\times$. Then
 		Reducing modulo $4$, we obtain $Z^2+X^2+Y^2 \equiv 0 \pmod 4$, which is impossible, since the
 		only squares modulo $4$ are $0$ and $1$, and the sum can be $0$ only if $X,Y,Z$ are all even,
 		contradicting the fact that they are coprime. Thus, $(u_x,u_y)=-1$.
-		This proof uses \code{ZMod.exists_sq_eq_two_iff} in \code{Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity} and \code{hensels_lemma} in \code{Mathlib.NumberTheory.Padics.Hensel}
+		This proof uses \code{ZMod.exists_sq_eq_two_iff} from \code{Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity} and \code{hensels_lemma} in \code{Mathlib.NumberTheory.Padics.Hensel}
 
 		\noindent\textbf{Case 2} Suppose $v_x=1$ and $v_y=0$. Then $x=2 u_x$ and $y=u_y$. We first show that
 		\[
@@ -336,6 +336,10 @@ N.B. more precisely, in the Lean code, S is a subset of the natural numbers, and
 over the $n$-th prime for $n \in S$.
 \end{definition}
 
+Note: we will care about the product of finitely many completions of $\Q$, which do not necessarily
+include $\R$, but the proof of the Approximation Theorem assumes it without loss of generality,
+since we can always add $\infty$ to $S$.
+
 \begin{theorem}\label{thm:approximation}%todo change references
 	\lean{Rat.approximation}
 	\uses{def:finite_embedding}
@@ -347,7 +351,21 @@ over the $n$-th prime for $n \in S$.
 	between $y$ and the image of $x$ is less than $\epsilon$.
 \end{theorem}
 \begin{proof}
-	TODO
+	Let $y=(y_\infty, (y_p)_{p \in S})$ be an element of $\R \times \prod_{p \in S} \Q_p$.
+	We can assume $y_p \in \Z_p$ for all $p \in S$, since otherwise we can multiply all $y_p$'s by an
+	integer. Let $\varepsilon > 0$ and $N \ge 0$. We need to prove that there exists $x \in \Q$ such that
+	$|y_\infty - x| \le \varepsilon$ and $v_p(y_p - x) \ge N$ for all $p \in S$.
+
+	By the Chinese Remainder Theorem \code{Nat.chineseRemainderOfFinset}, there exists $x_0 \in \N$
+	such that $x_0 \equiv y_p \pmod{p^N}$ for all $p \in S$.
+
+	Fix $q$ a prime number. By density of the numbers of the form $a/q^m$ in $\R$, where $a \in \Z$
+	and $m \ge 0$, we can find $a$ in $\Z$, $q$ a prime not in $S$ and $m \ge 0$, such that
+	\[
+	|x_0 - x_\infty - \frac{a}{q^m}(p_1\dots p_n)^N| \le \varepsilon.
+	\]
+
+	Then $x = x_0 + \frac{a}{q^m}(p_1\dots p_n)^N$ satisfies the required conditions.
 \end{proof}
 
 
@@ -362,12 +380,12 @@ over the $n$-th prime for $n \in S$.
 	\forall i \in I, \forall v \text{ place of } \Q, (x,a_i)_v=e_{i,v}
 	\]
 	if and only if the following conditions hold:
-	\begin{itemize}
+	\begin{enumerate}
 		\item For each $i \in I$, we have $e_{i,v}=1$ for all but finitely many places $v$.
 		\item For each $i \in I$, we have $\prod_v e_{i,v}=1$.
 		\item For each place $v$, there exists $x_v \in \Q_v^\times$ such that
 		$(x_v, a_i)_v = e_{i,v}$ for all $i \in I$.
-	\end{itemize}
+	\end{enumerate}
 \end{theorem}
 
 The proof uses \code{Nat.infinite_setOf_prime_and_modEq}.
@@ -375,5 +393,50 @@ The proof uses \code{Nat.infinite_setOf_prime_and_modEq}.
 \begin{proof}
 	\uses{def:Hilbert_symbol, thm:approximation, thm:real, thm:padic_odd_p, thm:padic_2,
 	prop:hilbert_symbol_properties, thm:product_formula, thm:padic_squares_open}
-TODO: necessity uses product formula, sufficiency uses the theorems in this section.
+To show that the conditions are necesary, simply observe that 1. is Theorem \ref{thm:almost_all_one},
+2. is Theorem \ref{thm:product_formula}, and 3. is trivial since we can take $x_v = x$ for all $v$.
+
+Conversely, suppose that 1., 2.\ and 3.\ hold. Up to multiplying by a square integer (which does
+not change the Hilbert symbols), we can assume that all $a_i$'s are integers.
+Let $S$ be the set of places $2$, $\infty$ and all the prime divisors of the $a_i$'s.
+Let $T$ be the set of places $v$ such that there exists $i \in I$ with $e_{i,v}=-1$.
+The set $S$ is finite and, by 1., $T$ is also finite.
+
+Consider first the case where $S \cap T= \emptyset$. Then, we define
+\[
+a = \prod_{\ell \in T} \ell, \quad m = 8 \prod_{\ell \in S \setminus\{2,\infty\}} \ell.
+\]
+
+Since $a,m$ are coprime, by \code{Nat.infinite_setOf_prime_and_modEq}, there exists a prime number
+$p$ such that $p \equiv a \pmod m$ and $p \not\in S \cup T$.
+
+Taking $x=ap$ works.
+\begin{itemize}
+	\item If $v= \infty$, then $x > 0$, so $(x, a_i)_\infty = 1$ for all $i$, and $\infty \notin T$,
+	so $e_{i,\infty}=1$.
+	\item If $v = \ell \in S$, we have $x \equiv a^2 \pmod m$, so $x$ is a square modulo any $\ell \in S$,
+	hence by Hensel's lemma it is a square in $\Q_\ell$, and $x$ is a square modulo $8$, so again by
+	Hensel's lemma it is a square in $\Q_2$. By Proposition \ref{prop:hilbert_symbol_properties},
+	$(x,a_i)=1$.
+	\item If $v = \ell \notin T$ and $\ell \ne p$, $v_\ell(x)=0$ and so
+	$(x,a_i)_{\ell}=\left(\dfrac{a_i}{\ell}\right)^v_{\ell}(x)=1$. On the other hand, $e_{i,\ell=1}$,
+	since $v \notin T$.
+	\item If $v = \ell in T$, then $v_\ell(x)=1$, so $(x,a_i)_{\ell}=\left(\dfrac{a_i}{\ell}\right)$.
+  By 3., there exists $x_\ell \in \Q_\ell^\times$ such that $(x_\ell, a_i)_\ell = e_{i,\ell}$ for all $i$,
+	and $v_\ell(x_\ell)$ is odd since at least one of the $e_{i,\ell}$'s is $-1$.
+	Therefore, $(a_i,x)_\ell$ and $(a_i,x_\ell)_\ell$ are both equal to $\left(\dfrac{a_i}{\ell}\right)$.
+	\item If $v = p$, since for all the other places the equality holds, by the product formula we
+	also have $(x,a_i)_p = e_{i,p}$ for all $i$.
+\end{itemize}
+
+For the general case, since the image of $\Q^\times$ is dense in $\prod_{v \in S} \Q_v^\times$, by
+Theorem \ref{thm:approximation}, and squares are open in $\Q_v^\times$, by Theorem \ref{thm:padic_squares_open},
+we can find $x' \in \Q^\times$ such that $x'/x_v$ is a square in $\Q_v^\times$ for all $v \in S$.
+Then, $(x', a_i)_v = (x_v, a_i)_v = e_{i,v}$ for all $i$ and all $v \in S$.
+Let $\eta_{i,v}= e_{i,v} (x', a_i)_v$. Then $\eta_{i,v}=1$ for all $v \in S$ and conditions 1., 2.\
+and 3. hold for the $\eta_{i,v}$'s, so we can apply the first part of the proof to find $y \in \Q^\times$
+such that $(y, a_i)_v = \eta_{i,v}$ for all $i$ and all $v$.
+
+Finally, setting $x = x' y$, we have $(x, a_i)_v = (x', a_i)_v (y, a_i)_v = e_{i,v}$ (by the explicit
+formulas for the Hilbert symbol in the $p$-adic and in the real case) for all $i$ and all $v$, as desired.
 \end{proof}

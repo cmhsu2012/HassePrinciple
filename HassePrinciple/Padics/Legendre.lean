@@ -31,6 +31,7 @@ noncomputable def legendreSym (a : ℤ_[p]) : ℤ := _root_.legendreSym p a.zmod
 variable {a b : ℤ_[p]}
 namespace legendreSym
 
+/-- The Padic Legendre symbol agrees with the classical Legendre symbol on the integers. -/
 lemma intCast (z : ℤ) : legendreSym (z : ℤ_[p]) = _root_.legendreSym p z := by
   sorry
 
@@ -52,6 +53,7 @@ theorem eq_neg_one_iff_not_one (ha : IsUnit a) :
 theorem eq_zero_iff : legendreSym a = 0 ↔ ¬ IsUnit a := by
   sorry
 
+/-- The Legendre symbol at zero is zero. -/
 @[simp]
 theorem at_zero : legendreSym (0 : ℤ_[p]) = 0 := by sorry
 
