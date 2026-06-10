@@ -1,4 +1,4 @@
-module  -- shake: keep-all
+module  -- shake: keep-all --deprecated_module: ignore
 
 public import HassePrinciple.HilbertSymbol.Basic
 public import HassePrinciple.HilbertSymbol.ExistenceTheorem
