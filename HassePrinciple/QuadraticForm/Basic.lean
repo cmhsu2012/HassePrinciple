@@ -16,10 +16,10 @@ public import Mathlib.LinearAlgebra.QuadraticForm.TensorProduct
 
 namespace QuadraticForm
 
-variable {K V : Type*} [Field K] [Invertible 2] [AddCommGroup V] [Module K V]
+variable {K V : Type*} [Field K] [Invertible (2 : K)] [AddCommGroup V] [Module K V]
   [FiniteDimensional K V] [NeZero (Module.finrank K V)]
 
-theorem equivalent_weightedSumSquares' (Q : QuadraticForm K V) :
+theorem equivalent_weightedSumSquares' (Q : QuadraticForm K V) (hQ : Q ≠ 0) :
     ∃ (w : Fin (Module.finrank K V) → K), w (0 : Fin (Module.finrank K V)) = 1 ∧
       Q.Equivalent (QuadraticMap.weightedSumSquares K w) := by
   sorry
@@ -57,12 +57,17 @@ def represents (Q : QuadraticMap R M N) (n : N) : Prop :=
 
 lemma represents_zero_iff_isotropic {Q : QuadraticMap R M N} :
     Q.represents 0 ↔ Q.Isotropic := by
-  sorry
+  dsimp[Isotropic, Anisotropic, represents]
+  push Not
+  rfl
 
 lemma Equivalent.represents {Q Q' : QuadraticMap R M N} (h : Q.Equivalent Q') {n : N}
     (hQ : Q.represents n) :
     Q'.represents n := by
-  sorry
+  rcases h with ⟨f⟩
+  rcases hQ with ⟨x, hxQ, hx0⟩
+  use f.toFun x
+  aesop
 
 lemma Equivalent.represents_iff {Q Q' : QuadraticMap R M N} (h : Q.Equivalent Q') (n : N) :
     Q.represents n ↔ Q'.represents n :=
@@ -70,7 +75,8 @@ lemma Equivalent.represents_iff {Q Q' : QuadraticMap R M N} (h : Q.Equivalent Q'
 
 lemma Equivalent.isotropic {Q Q' : QuadraticMap R M N} (h : Q.Equivalent Q') (hQ : Q.Isotropic) :
     Q'.Isotropic := by
-  sorry
+  rw [← represents_zero_iff_isotropic] at hQ ⊢
+  exact Equivalent.represents h hQ
 
 lemma Equivalent.isotropic_iff {Q Q' : QuadraticMap R M N} (h : Q.Equivalent Q') :
     Q.Isotropic ↔ Q'.Isotropic :=
@@ -83,8 +89,19 @@ section CommRing
 variable {R M N : Type*} [CommRing R] [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
 
 lemma nondegenerate_of_anisotropic [Invertible (2 : R)] {Q : QuadraticMap R M N}
-    (hQ : Q.Anisotropic) : Q.Nondegenerate :=
-  sorry
+    (hQ : Q.Anisotropic) : Q.Nondegenerate := by
+  rw [nondegenerate_iff_radical_eq_bot, ← not_bot_lt_iff]
+  rw [Anisotropic] at hQ
+  intro bot_lt_rad
+  obtain ⟨x, x_in_rad, x_not_in_bot⟩ := SetLike.exists_of_lt bot_lt_rad
+  have x_ne_zero : x ≠ 0 := by
+    intro x_eq_zero
+    rw [← Submodule.mem_bot (R := R)] at x_eq_zero
+    exact x_not_in_bot x_eq_zero
+  have x_eq_zero : x = 0 := by
+    rw [mem_radical_iff'] at x_in_rad
+    exact hQ x x_in_rad.1
+  contradiction
 
 open QuadraticMap
 
