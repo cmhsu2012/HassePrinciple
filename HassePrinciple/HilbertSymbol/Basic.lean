@@ -41,7 +41,7 @@ namespace hilbertSym
 
 section Field
 
-variable {k : Type*} [Field k] {a b: k} (a' b' : k)
+variable {k : Type*} [Field k] {a b : k} (a' b' : k)
 
 /-- If `a` and `b` are nonzero, then `hilbertSym a b` is nonzero. -/
 lemma ne_zero_of_ne_zero (ha : a ≠ 0) (hb : b ≠ 0) : hilbertSym a b ≠ 0 := by
