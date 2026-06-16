@@ -41,7 +41,7 @@ namespace hilbertSym
 
 section Field
 
-variable {k : Type*} [Field k] {a b : k} (a' b' : k)
+variable {k : Type*} [Field k] {a b: k} (a' b' : k)
 
 /-- If `a` and `b` are nonzero, then `hilbertSym a b` is nonzero. -/
 lemma ne_zero_of_ne_zero (ha : a ≠ 0) (hb : b ≠ 0) : hilbertSym a b ≠ 0 := by
@@ -49,13 +49,115 @@ lemma ne_zero_of_ne_zero (ha : a ≠ 0) (hb : b ≠ 0) : hilbertSym a b ≠ 0 :=
 
 /-- If `a` and `b` are multiplied by a square, the Hilbert symbol is unchanged. -/
 @[simp]
-lemma mul_square_eq :
+lemma mul_square_eq (ha' : a' ≠ 0) (hb' : b' ≠ 0) :
     hilbertSym (a * a'^2) (b * b'^2) = hilbertSym a b := by
-  sorry
+  have hforward: ∀ x y z : k, ((x,y,z) ≠ (0, 0, 0) ∧ z^2 = a * a'^2 * x^2 + b * b'^2 * y^2) →
+    z^2 = a*(a'*x)^2 + b*(b'*y)^2 ∧ (a'*x, b'*y, z) ≠ (0, 0, 0) := by
+    intro x y z h
+    obtain ⟨ h1, h2⟩ := h
+    constructor
+    · ring
+      exact h2
+    · simp only [ne_eq, Prod.mk.injEq, mul_eq_zero, not_and]
+      simp at h1
+      intro ha'x hb'y
+      aesop
+  have hbackward: ∀ x y z : k, ((x,y,z)≠(0,0,0) ∧ z^2 = a*x^2+b*y^2) →
+     z^2 = a*a'^2*((1/a')*x)^2 + b*b'^2*((1/b')*y)^2 ∧ ((1/a')*x, (1/b')*y, z) ≠ (0, 0, 0) := by
+    intro x y z h
+    obtain ⟨ h1, h2 ⟩ := h
+    constructor
+    · field_simp
+      exact h2
+    · simp
+      simp at h1
+      aesop
+  unfold hilbertSym
+  simp only [mul_eq_zero, ne_eq,
+    Prod.mk.injEq, not_and] at hforward hbackward
+  split_ifs with ha hb hc hd he hf hg hh
+  · rfl
+  · simp only [zero_ne_one]
+    contrapose! hb
+    simp at ha
+    tauto
+  · contrapose! hb
+    simp at ha
+    tauto
+  · simp only [one_ne_zero]
+    contrapose! hd
+    simp at ha
+    tauto
+  · rfl
+  · contrapose hf
+    obtain ⟨ z, x, y, h⟩ := hd
+    specialize hforward x y z
+    use z, a'*x, b'*y
+    obtain ⟨ h1, h2⟩ := h
+    constructor
+    · simp only [ne_eq, Prod.mk.injEq, mul_eq_zero, not_and, not_or]
+      simp at h1
+      intro hz a'x
+      aesop
+    · ring
+      exact h2
+  · contrapose! hg
+    simp at ha
+    tauto
+  · contrapose hd
+    obtain ⟨ z, x, y, h ⟩:= hh
+    specialize hbackward x y z
+    use z, (1/a'*x), (1/b'*y)
+    obtain ⟨ h1, h2⟩:= h
+    constructor
+    · simp only [one_div, ne_eq, Prod.mk.injEq, mul_eq_zero, inv_eq_zero, not_and, not_or]
+      intro hz ha'x
+      aesop
+    · field_simp
+      exact h2
+  · rfl
+
 
 /-- The Hilbert symbol is commutative. -/
 lemma comm : hilbertSym a b = hilbertSym b a := by
-  sorry
+  unfold hilbertSym
+  split_ifs with ha hb hc hd he hf hg hh
+  · rfl
+  · tauto
+  · tauto
+  · tauto
+  · rfl
+  · contrapose hd
+    simp only [ne_eq, Prod.mk.injEq, not_and, not_exists]
+    simp only [ne_eq, Prod.mk.injEq, not_and, not_exists] at hf
+    contrapose hf
+    simp only [not_forall, not_not]
+    simp only [not_forall, not_not] at hf
+    obtain ⟨ x, x_1, x_2, h⟩ := hf
+    use x, x_2, x_1
+    obtain ⟨ hin, hout⟩ := h
+    constructor
+    · rw [sub_sub, add_comm, ← sub_sub] at hout
+      exact hout
+    · have h_new: x = 0 → x_2 = 0 → ¬x_1 = 0 := by
+        intro hz hx hy
+        exact hin hz hy hx
+      exact h_new
+  · tauto
+  · contrapose hd
+    simp only [ne_eq, Prod.mk.injEq, not_and]
+    simp only [ne_eq, Prod.mk.injEq, not_and] at hh
+    obtain ⟨ z, x, y, h⟩ := hh
+    use z, y, x
+    obtain ⟨ hin, hout⟩ := h
+    constructor
+    · have h_new : z = 0 → y = 0 → ¬x = 0 := by
+        intro hz hy hx
+        exact hin hz hx hy
+      exact h_new
+    · rw [sub_sub, add_comm, ← sub_sub] at hout
+      exact hout
+  · rfl
 
 /-
 # Basic properties of the Hilbert symbol
