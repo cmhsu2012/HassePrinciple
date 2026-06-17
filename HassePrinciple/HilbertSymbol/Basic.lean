@@ -45,14 +45,8 @@ variable {k : Type*} [Field k] {a b : k} (a' b' : k)
 
 /-- If `a` and `b` are nonzero, then `hilbertSym a b` is nonzero. -/
 lemma ne_zero_of_ne_zero (ha : a ≠ 0) (hb : b ≠ 0) : hilbertSym a b ≠ 0 := by
-  unfold hilbertSym
-  simp only [ne_eq, Prod.mk.injEq, not_and, Int.reduceNeg, ite_eq_left_iff, not_or, and_imp,
-    Classical.not_imp]
-  constructor
-  · exact ha
-  · constructor
-    · exact hb
-    · aesop
+  simp [hilbertSym, ha, hb]
+  split_ifs <;> simp
 
 /-- If `a` and `b` are multiplied by a square, the Hilbert symbol is unchanged. -/
 @[simp]
