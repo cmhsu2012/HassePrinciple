@@ -14,48 +14,6 @@ public import Mathlib.LinearAlgebra.QuadraticForm.TensorProduct
 
 @[expose] public section
 
-namespace QuadraticForm
-
-variable {K V : Type*} [Field K] [Invertible (2 : K)] [AddCommGroup V] [Module K V]
-  [FiniteDimensional K V] [NeZero (Module.finrank K V)]
-
-theorem equivalent_weightedSumSquares' (Q : QuadraticForm K V) (hQ : Q ≠ 0) :
-    ∃ (w : Fin (Module.finrank K V) → K), w (0 : Fin (Module.finrank K V)) = 1 ∧
-      Q.Equivalent (QuadraticMap.weightedSumSquares K w) := by
-
-  -- #check LinearMap.BilinForm.exists_orthogonal_basis (associated_isSymm _ Q)
-  -- obtain ⟨v, hortho⟩ := LinearMap.BilinForm.exists_orthogonal_basis (associated_isSymm K Q)
-  #check LinearMap.BilinForm.exists_orthogonal_basis
-  #check isometryEquivWeightedSumSquares
-  #check LinearMap.isOrthoᵢ_flip
-
-  #check equivalent_weightedSumSquares Q
-  obtain ⟨w, ⟨hw₁⟩⟩ := equivalent_weightedSumSquares Q
-  have w_ne_zero : ∃ i, w i ≠ 0 := by sorry
-  rcases w_ne_zero with ⟨i, wi_ne_zero⟩
-  #check Equiv.swap
-  let w' : Fin (Module.finrank K V) → K := w ∘ (Equiv.swap 0 i)
-  let u : Fin (Module.finrank K V) → Kˣ := sorry
-  #check isometryEquivWeightedSumSquaresWeightedSumSquares
-  let w'' : Fin (Module.finrank K V) → K := sorry
-  sorry
-
--- Lemma 3.3.6
-theorem equivalent_weightedSumSquares_units_of_nondegenerate
-    {Q : QuadraticForm K V} (hQ : Q.Nondegenerate) :
-    ∃ (w : Fin (Module.finrank K V) → Kˣ), w (0 : Fin (Module.finrank K V)) = 1 ∧
-      Q.Equivalent (QuadraticMap.weightedSumSquares K w) := by
-  sorry
-
--- Lemma 3.3.7
-theorem equivalent_weightedSumSquares_squarefree_units_of_nondegenerate
-    {Q : QuadraticForm K V} (hQ : Q.Nondegenerate) :
-    ∃ (w : Fin (Module.finrank K V) → Kˣ), w (0 : Fin (Module.finrank K V)) = 1 ∧
-      ∀ n, Squarefree (w n) ∧ Q.Equivalent (QuadraticMap.weightedSumSquares K w) := by
-  sorry
-
-
-end QuadraticForm
 namespace QuadraticMap
 
 section Represents
@@ -97,35 +55,6 @@ lemma Equivalent.isotropic_iff (h : Q.Equivalent Q') :
     Q.Isotropic ↔ Q'.Isotropic :=
   ⟨fun hQ ↦ h.isotropic hQ, fun hQ ↦ h.symm.isotropic hQ⟩
 
-
-variable {ι S R : Type*}
-variable [Fintype ι] [CommSemiring R] [Monoid S] [DistribMulAction S R] [SMulCommClass S R R]
-variable [IsScalarTower S R R]
-variable {w : ι → S} {w' : ι → S}
-
-lemma mul_unit_isotropic (a : Sˣ) (h : ∀ i, w' i = w i * a) :
-  (QuadraticMap.weightedSumSquares R w).Isotropic ↔ (QuadraticMap.weightedSumSquares R w').Isotropic := by sorry
-
-variable {K V : Type*} [Field K] [Invertible (2 : K)] [AddCommGroup V] [Module K V]
-  [FiniteDimensional K V] [NeZero (Module.finrank K V)]
-
-theorem newthm
-    {Q : QuadraticForm K V} (hQ : Q.Nondegenerate) :
-    ∃ (w : Fin (Module.finrank K V) → Kˣ), w (0 : Fin (Module.finrank K V)) = 1 ∧
-      (Q.Isotropic ↔ (QuadraticMap.weightedSumSquares K w).Isotropic) := by
-  obtain ⟨w_init, hw_init⟩ := QuadraticForm.equivalent_weightedSumSquares_units_of_nondegenerate' Q _
-  #check QuadraticMap.weightedSumSquares K w_init
-  #check Q
-  let w_mul_unit : Fin (Module.finrank K V) → Kˣ := fun i => w_init i * w_init 0
-  let w : Fin (Module.finrank K V) → Kˣ := fun i => w_mul_unit i / (w_mul_unit 0) ^ 2
-  use w
-  constructor
-  · sorry
-  · rw [QuadraticMap.Equivalent.isotropic_iff hw_init]
-    rw [mul_unit_isotropic w (0 : Fin (Module.finrank K V))]
-    -- Use "isometryEquivWeightedSumSquaresWeightedSumSquares" to make Q equivalent to a weighted sum of squares with unit coefficients
-
-
 end CommSemiring
 
 section CommRing
@@ -156,6 +85,26 @@ end CommRing
 
 end Represents
 
+section WeightedSumSquares
+
+variable {S R ι : Type*} [Monoid S] [CommSemiring R] [Fintype ι]
+  [DistribMulAction S R] [SMulCommClass S R R] (w w' : ι → Sˣ)
+
+lemma mul_unit_isotropic (a : Sˣ) (h : ∀ (i : ι), w' i = a * w i) :
+  (weightedSumSquares R w').Isotropic → (weightedSumSquares R w).Isotropic := by
+  contrapose!
+  rintro hw x hw'xzero
+  simp only [weightedSumSquares_apply, h, mul_smul, ← Finset.smul_sum, smul_eq_zero_iff_eq] at hw'xzero
+  simp only [Anisotropic, weightedSumSquares_apply] at hw
+  exact hw x hw'xzero
+
+lemma mul_unit_isotropic_iff (a : Sˣ) (h : ∀ (i : ι), w' i = a * w i) :
+  (weightedSumSquares R w).Isotropic ↔ (weightedSumSquares R w').Isotropic :=
+    ⟨mul_unit_isotropic (w := w') (w' := w) a⁻¹ (by simp[h]: ∀ (i : ι), w i = a⁻¹ * w' i),
+    mul_unit_isotropic (w := w) (w' := w') a h⟩
+
+end WeightedSumSquares
+
 end QuadraticMap
 
 namespace QuadraticForm
@@ -169,6 +118,55 @@ lemma degenerate_baseChange {R A M : Type*} [CommRing R] [CommRing A] [Algebra R
 section Field
 
 variable {K V W : Type*} [Field K] [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W]
+
+
+section NormalizedWeightedSumSquares
+
+variable [Invertible (2 : K)] [FiniteDimensional K V] [NeZero (Module.finrank K V)]
+
+-- The following three theorems are to be deleted
+theorem equivalent_weightedSumSquares' (Q : QuadraticForm K V) (hQ : Q ≠ 0) :
+    ∃ (w : Fin (Module.finrank K V) → K), w (0 : Fin (Module.finrank K V)) = 1 ∧
+      Q.Equivalent (QuadraticMap.weightedSumSquares K w) := by
+  sorry
+
+theorem equivalent_weightedSumSquares_units_of_nondegenerate_old
+    {Q : QuadraticForm K V} (hQ : Q.Nondegenerate) :
+    ∃ (w : Fin (Module.finrank K V) → Kˣ), w (0 : Fin (Module.finrank K V)) = 1 ∧
+      Q.Equivalent (QuadraticMap.weightedSumSquares K w) := by
+  sorry
+
+theorem equivalent_weightedSumSquares_squarefree_units_of_nondegenerate
+    {Q : QuadraticForm K V} (hQ : Q.Nondegenerate) :
+    ∃ (w : Fin (Module.finrank K V) → Kˣ), w (0 : Fin (Module.finrank K V)) = 1 ∧
+      ∀ n, Squarefree (w n) ∧ Q.Equivalent (QuadraticMap.weightedSumSquares K w) := by
+  sorry
+-- The above three theorems are to be deleted
+
+theorem equivalent_weightedSumSquares_units_of_nondegenerate
+    {Q : QuadraticForm K V} (hQ : Q.Nondegenerate) :
+    ∃ (w : Fin (Module.finrank K V) → Kˣ), w (0 : Fin (Module.finrank K V)) = 1 ∧
+      (Q.Isotropic ↔ (QuadraticMap.weightedSumSquares K w).Isotropic) := by
+  have : (QuadraticMap.associated Q).SeparatingLeft :=
+    (QuadraticMap.nondegenerate_associated_iff.mpr hQ).1
+  obtain ⟨w₀, hw₀⟩ := equivalent_weightedSumSquares_units_of_nondegenerate' Q this
+  let w₁ : Fin (Module.finrank K V) → Kˣ := fun i => w₀ 0 * w₀ i
+  let w : Fin (Module.finrank K V) → Kˣ := fun i => w₁ i / (w₀ 0) ^ 2
+  use w
+  constructor
+  · simp only [w, w₁, pow_two, div_self']
+  · rw [QuadraticMap.Equivalent.isotropic_iff hw₀]
+    let w₁K : Fin (Module.finrank K V) → K := fun i => w₁ i
+    let wK : Fin (Module.finrank K V) → K := fun i => w i
+    rw [QuadraticMap.mul_unit_isotropic_iff (w := w₀) (w' := w₁) (a := w₀ 0) (by simp [w₁, w₁])]
+    have hw₁ :
+        (QuadraticMap.weightedSumSquares K w₁).Equivalent (QuadraticMap.weightedSumSquares K w) := by
+      let u : Fin (Module.finrank K V) → Kˣ := fun i => (w₀ 0)
+      exact ⟨QuadraticForm.isometryEquivWeightedSumSquaresWeightedSumSquares
+        (w := w₁K) (w' := wK) u (by simp [w₁K, wK, w, u])⟩
+    rw [QuadraticMap.Equivalent.isotropic_iff hw₁]
+
+end NormalizedWeightedSumSquares
 
 -- Condition (ii) seems annoying to state, can we avoid it?
 lemma represents_iff_sub_isotropic {Q : QuadraticForm K V} (hQ : Q.Isotropic)
