@@ -161,13 +161,9 @@ theorem right_square_eq_one (ha : a ≠ 0) (hb : b ≠ 0) : hilbertSym a (b ^ 2)
 /-- The Hilbert symbol of a and -a, with a nonzero, equals 1. -/
 @[simp]
 theorem right_neg_self_eq_one (ha : a ≠ 0) : hilbertSym a (-a) = 1 := by
-  unfold hilbertSym
-  split_ifs with h1 h2
-  · aesop
-  · rfl
-  · apply h2
-    use 0, 1, 1
-    aesop
+  rw [hilbertSym, if_neg (by simp [ha]), if_pos]
+  use 0, 1, 1
+  aesop
 
 /-- The Hilbert symbol of a and 1-a, with a different from 0 and 1, equals 1. -/
 @[simp]
