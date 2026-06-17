@@ -31,6 +31,7 @@ noncomputable def legendreSym (a : ℤ_[p]) : ℤ := _root_.legendreSym p a.zmod
 variable {a b : ℤ_[p]}
 namespace legendreSym
 
+/-helper lemma-/
 lemma legendreSymMod (z : ℤ_[p]) : legendreSym (z) = legendreSym (z.zmodRepr : ℤ_[p]) := by
   unfold legendreSym
   unfold _root_.legendreSym
