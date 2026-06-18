@@ -45,36 +45,29 @@ variable {k : Type*} [Field k] {a b : k} (a' b' : k)
 
 /-- If `a` and `b` are nonzero, then `hilbertSym a b` is nonzero. -/
 lemma ne_zero_of_ne_zero (ha : a ≠ 0) (hb : b ≠ 0) : hilbertSym a b ≠ 0 := by
-  unfold hilbertSym
-  simp only [ne_eq, Prod.mk.injEq, not_and, Int.reduceNeg, ite_eq_left_iff, not_or, and_imp,
-    Classical.not_imp]
-  constructor
-  · exact ha
-  · constructor
-    · exact hb
-    · aesop
+  simp [hilbertSym, ha, hb]
+  split_ifs <;> simp
 
 /-- If `a` and `b` are multiplied by a square, the Hilbert symbol is unchanged. -/
 @[simp]
 lemma mul_square_eq (ha' : a' ≠ 0) (hb' : b' ≠ 0) :
-    hilbertSym (a * a'^2) (b * b'^2) = hilbertSym a b := by
-    simp only [hilbertSym, mul_eq_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+  hilbertSym (a * a'^2) (b * b'^2) = hilbertSym a b := by
+  simp only [hilbertSym, mul_eq_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
       pow_eq_zero_iff, Prod.mk.injEq, not_and, Int.reduceNeg]
-    by_cases ha : a = 0
-    · simp [ha]
-    · by_cases hb : b = 0
-      · simp [hb]
-      · simp only [mul_eq_zero, ha, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff,
-          false_or, hb, Prod.mk.injEq, not_and, Int.reduceNeg, or_self, ↓reduceIte]
-        rw [if_neg (by aesop)]
-        split_ifs with h h' h'
-        · rfl
-        · obtain ⟨z, x, y, h0, heq⟩ := h
-          exact h' ⟨z, (a' * x), (b' * y), by aesop, by rw [← heq]; ring⟩
-        · obtain ⟨z, x, y, h0, heq⟩ := h'
-          apply h ⟨ z, (1/a'*x), (1/b'*y), by aesop, by field_simp; rw [heq]⟩
-        · rfl
-
+  by_cases ha : a = 0
+  · simp [ha]
+  · by_cases hb : b = 0
+    · simp [hb]
+    · simp only [mul_eq_zero, ha, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff,
+        false_or, hb, Prod.mk.injEq, not_and, Int.reduceNeg, or_self, ↓reduceIte]
+      rw [if_neg (by aesop)]
+      split_ifs with h h' h'
+      · rfl
+      · obtain ⟨z, x, y, h0, heq⟩ := h
+        exact h' ⟨z, (a' * x), (b' * y), by aesop, by rw [← heq]; ring⟩
+      · obtain ⟨z, x, y, h0, heq⟩ := h'
+        apply h ⟨ z, (1/a'*x), (1/b'*y), by aesop, by field_simp; rw [heq]⟩
+      · rfl
 
 /-- The Hilbert symbol is commutative. -/
 lemma comm : hilbertSym a b = hilbertSym b a := by
@@ -103,94 +96,66 @@ lemma comm : hilbertSym a b = hilbertSym b a := by
 
 theorem eq_one_iff (ha : a ≠ 0) (hb : b ≠ 0) (hc : ¬IsSquare b) :
     hilbertSym a b = 1 ↔ ∃ t : QuadraticAlgebra k b 0, a = QuadraticAlgebra.norm t := by
-    constructor
-    · intro hhilb
-      unfold hilbertSym at hhilb
-      split_ifs at hhilb with h1 h2
-      · contrapose hhilb
-        aesop
-      · obtain ⟨ z, x, y, hnonzero, heq⟩ := h2
-        by_cases hx: x ≠ 0
-        · use (QuadraticAlgebra.mk (z/x) (y/x) : (QuadraticAlgebra k b 0))
-          rw [QuadraticAlgebra.norm_def]
-          field_simp
-          rw [sub_eq_zero] at heq
-          ring_nf
-          field_simp
-          rw [mul_comm (y^2) b, ← heq, sub_sub_cancel]
-        · contrapose hc
-          simp only [ne_eq, not_not] at hx
-          rw [hx] at heq
-          simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero,
-            sub_zero] at heq
-          unfold IsSquare
-          use z/y
-          field_simp
-          rw [sub_eq_zero] at heq
-          rw [heq]
-          field_simp
-          rw [div_self]
-          aesop
-    · intro hnorm
-      unfold hilbertSym
-      split_ifs with h1 h2
-      · contrapose h1
-        aesop
-      · rfl
-      · contrapose h2
-        obtain ⟨ pq, hnorm'⟩ := hnorm
-        obtain ⟨ p,q⟩ := pq
-        use p, 1, q
-        constructor
-        · aesop
-        · rw [QuadraticAlgebra.norm_def] at hnorm'
-          simp only [zero_mul, add_zero] at hnorm'
-          rw [hnorm']
-          ring
+  rw [hilbertSym, if_neg (by simp [ha, hb])]
+  refine ⟨fun hhilb ↦ ?_, fun hnorm ↦ ?_⟩
+  · simp only [ne_eq, Prod.mk.injEq, not_and, Int.reduceNeg, ite_eq_left_iff, not_exists,
+      reduceCtorEq, imp_false, not_forall, not_not] at hhilb
+    obtain ⟨z, x, y, hnonzero, heq⟩ := hhilb
+    use (QuadraticAlgebra.mk (z/x) (y/x))
+    symm
+    rw [sub_eq_zero] at heq
+    have hx : x ≠ 0 := by
+      simp only [ne_eq]
+      contrapose heq
+      rw [heq]
+      ring_nf
+      contrapose hc
+      unfold IsSquare
+      use z/y
+      field_simp
+      rw [hc]
+      field_simp
+      rw [div_self]
+      simp only [ne_eq]
+      aesop
+    calc
+      QuadraticAlgebra.norm { re := z / x, im := y / x }
+      =  z / x * (z / x) - b * (y / x) * (y / x)  := by
+        simp only [QuadraticAlgebra.norm, zero_mul, add_zero, MonoidHom.coe_mk, OneHom.coe_mk]
+      _ = z^2/x^2 - b * (y^2/x^2) := by field_simp
+      _ = (z^2-b*y^2)/x^2 := by ring
+      _ = a := by
+        rw [← heq, sub_sub_cancel]
+        field_simp
+  · rw [if_pos]
+    obtain ⟨⟨p, q⟩, hnorm'⟩ := hnorm
+    use p, 1, q, by aesop
+    simp only [QuadraticAlgebra.norm_def, zero_mul, add_zero] at hnorm'
+    rw [hnorm']
+    ring
 
 /-- The Hilbert symbol of a and b (both nonzero) equals 1 if b is a square. -/
 @[simp]
 theorem right_square_eq_one (ha : a ≠ 0) (hb : b ≠ 0) : hilbertSym a (b ^ 2) = 1 := by
-  unfold hilbertSym
-  split_ifs with h1 h2
-  · aesop
-  · rfl
-  · apply h2
-    use b, 0, 1
-    aesop
+  rw [hilbertSym, if_neg (by aesop), if_pos]
+  use b, 0, 1
+  aesop
 
 
 /-- The Hilbert symbol of a and -a, with a nonzero, equals 1. -/
 @[simp]
 theorem right_neg_self_eq_one (ha : a ≠ 0) : hilbertSym a (-a) = 1 := by
-  unfold hilbertSym
-  split_ifs with h1 h2
-  · aesop
-  · rfl
-  · apply h2
-    use 0, 1, 1
-    aesop
+  rw [hilbertSym, if_neg (by simp [ha]), if_pos]
+  use 0, 1, 1
+  aesop
 
 /-- The Hilbert symbol of a and 1-a, with a different from 0 and 1, equals 1. -/
 @[simp]
 theorem right_one_minus_self_eq_one (ha0 : a ≠ 0) (ha1 : a ≠ 1) :
     hilbertSym a (1 - a) = 1 := by
-  unfold hilbertSym
-  split_ifs with h1 h2
-  · simp only [zero_ne_one]
-    contrapose h1
-    simp only [not_or]
-    constructor
-    · aesop
-    · contrapose ha1
-      calc
-        a = a + 0 := by ring
-        _ = a + (1 - a) := by rw [ha1]
-        _ = 1 := by ring
-  · rfl
-  · apply h2
-    use 1, 1, 1
-    aesop
+  rw [hilbertSym, if_neg (by simp [ha0, sub_ne_zero.mpr ha1.symm]), if_pos]
+  use 1, 1, 1
+  aesop
 
 /-- If the Hilbert symbol of a and b equals 1, then the Hilbert symbol of a and b * b' equals the
 Hilbert symbol of a and b'. -/
