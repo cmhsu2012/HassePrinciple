@@ -82,74 +82,97 @@ and not all of `x, y, z` are zero, then there exists a nontrivial solution to th
 lemma lift_solutions_to_int {v : ℚ_[p]ˣ} {x y z : ℚ_[p]}
     (hnontriv : (x,y,z) ≠ (0,0,0)) (hsol : z ^ 2 - p * x ^ 2 - v * y ^ 2 = 0) :
     ∃ z' y' x' : ℤ_[p],
-      (z' : ℚ_[p]) ^ 2 - p * (x' : ℚ_[p]) ^ 2 - v * (y' : ℚ_[p]) ^ 2 = 0 := by
-  have h₀ : ∃ (x' y' z' : ℤ_[p]),
-  ((z' : ℚ_[p])^2 - p * (x' : ℚ_[p])^2 - v * (y' : ℚ_[p])^2 = 0) ∧
-  (IsUnit x' ∨ IsUnit y' ∨ IsUnit z') := by
-    by_cases h_all_ints : (‖x‖ ≤ 1 ∧ ‖y‖ ≤ 1 ∧ ‖z‖ ≤ 1)
-    · by_cases h_x_max : (‖y‖ ≤ ‖x‖ ∧ ‖z‖ ≤ ‖x‖) -- prove that in this case, x ≠ 0
-      have h_x_ne_zero : x ≠ 0 := by
-        have h_norm_x_ne_zero : ‖x‖ > 0 := by
-          by_cases (z ≠ 0 ∨ y ≠ 0)
-          · sorry
-          · sorry
-        exact norm_pos_iff.mp h_norm_x_ne_zero
-      · let x' := x * p ^ (-x.valuation)
-        let y' := y * p ^ (-x.valuation)
-        let z' := z * p ^(-x.valuation)
-        have hx' : ‖x'‖ = 1 := by
-          unfold x'
-          have := norm_mul_pow_neg_valuation_eq_one (Units.mk0 x h_x_ne_zero)
-          simp only [Units.val_mk0, zpow_neg, norm_mul,
-          norm_inv, norm_p_zpow, inv_inv] at this
-          simp only [zpow_neg, norm_mul, norm_inv, norm_p_zpow, inv_inv]
-          exact this
-        have hy' : ‖y'‖ ≤ 1 := by
-          unfold y'
-          simp only [zpow_neg, norm_mul, norm_inv, norm_p_zpow, inv_inv]
-          have hxinvval : ↑p ^ x.valuation = ‖x‖⁻¹ := by
-            have := norm_mul_pow_neg_valuation_eq_one (Units.mk0 x h_x_ne_zero)
-            simp only [Units.val_mk0, zpow_neg, norm_mul,
-            norm_inv, norm_p_zpow, inv_inv] at this
-            rw[mul_eq_one_iff_inv_eq₀] at this
-            · exact Real.ext_cauchy (congrArg Real.cauchy (id (Eq.symm this)))
-            · simp only [ne_eq, norm_eq_zero]
-              exact h_x_ne_zero
-          rw[hxinvval]
-          rw[mul_inv_le_iff₀]
-          · simp only [one_mul]
-            exact h_x_max.1
-          · simp only [norm_pos_iff, ne_eq]
-            exact h_x_ne_zero
-        have hz' : ‖z'‖ ≤ 1 := by
-          unfold z'
-          simp only [zpow_neg, norm_mul, norm_inv, norm_p_zpow, inv_inv]
-          have hxinvval : ↑p ^ x.valuation = ‖x‖⁻¹ := by
-            have := norm_mul_pow_neg_valuation_eq_one (Units.mk0 x h_x_ne_zero)
-            simp only [Units.val_mk0, zpow_neg, norm_mul,
-            norm_inv, norm_p_zpow, inv_inv] at this
-            rw[mul_eq_one_iff_inv_eq₀] at this
-            · exact Real.ext_cauchy (congrArg Real.cauchy (id (Eq.symm this)))
-            · simp only [ne_eq, norm_eq_zero]
-              exact h_x_ne_zero
-          rw[hxinvval]
-          rw[mul_inv_le_iff₀]
-          · simp only [one_mul]
-            exact h_x_max.2
-          · simp only [norm_pos_iff, ne_eq]
-            exact h_x_ne_zero
-        have hnewsol : ((z' : ℚ_[p])^2 - p * (x' : ℚ_[p])^2
-        - v * (y' : ℚ_[p])^2 = 0) := by
-          unfold x' y' z'
-          grind
-        sorry -- x is a unit
-      · by_cases h_y_max : (‖z‖ ≤ ‖y‖)
-        · sorry -- do this the same as h_x_max, so consolidate into one lemma
-        · sorry -- do this the same as h_x_max, so consolidate into one lemma
-    · sorry
-  obtain ⟨x', y', z', h₁, h₂⟩ := h₀
-  sorry
-
+      (z' : ℚ_[p]) ^ 2 - p * (x' : ℚ_[p]) ^ 2 - v * (y' : ℚ_[p]) ^ 2 = 0
+      ∧ (IsUnit z' ∨ IsUnit y' ∨ IsUnit x') := by
+  wlog h_x_max : (‖y‖ ≤ ‖x‖ ∧ ‖z‖ ≤ ‖x‖)
+  · sorry
+  · have h_x_ne_zero : x ≠ 0 := by -- prove that in this case, x ≠ 0
+      have h_norm_x_ne_zero : 0 < ‖x‖ := by
+        by_cases (z ≠ 0)
+        · have hz : 0 < ‖z‖ := by
+            expose_names
+            exact norm_pos_iff.mpr h
+          apply lt_of_lt_of_le hz h_x_max.2
+        · by_cases (y ≠ 0)
+          · have hy : 0 < ‖y‖ := by
+              expose_names
+              exact norm_pos_iff.mpr h_1
+            apply lt_of_lt_of_le hy h_x_max.1
+          · have hx : x ≠ 0 := by
+              by_contra
+              have htriv : (x,y,z) = (0,0,0) := by
+                simp only [Prod.mk.injEq]
+                constructor
+                · exact this
+                · constructor
+                  · expose_names
+                    simp only [ne_eq, not_not] at h_1
+                    exact h_1
+                  · expose_names
+                    simp only [ne_eq, not_not] at h
+                    exact h
+              contradiction -- completes the proof that x ≠ 0 (in this case!)
+            exact norm_pos_iff.mpr hx -- completes the proof that 0 < ‖x‖
+      exact norm_pos_iff.mp h_norm_x_ne_zero -- completes the proof that x ≠ 0
+    let x' := x * p ^ (-x.valuation)
+    let y' := y * p ^ (-x.valuation)
+    let z' := z * p ^(-x.valuation)
+    have hx'unit : ‖x'‖ = 1 := by
+      unfold x'
+      have := norm_mul_pow_neg_valuation_eq_one (Units.mk0 x h_x_ne_zero)
+      simp only [Units.val_mk0, zpow_neg, norm_mul,
+      norm_inv, norm_p_zpow, inv_inv] at this
+      simp only [zpow_neg, norm_mul, norm_inv, norm_p_zpow, inv_inv]
+      exact this
+    have hx' : ‖x'‖ ≤ 1 := by
+      exact Std.le_of_eq hx'unit
+    have hy' : ‖y'‖ ≤ 1 := by
+      unfold y'
+      simp only [zpow_neg, norm_mul, norm_inv, norm_p_zpow, inv_inv]
+      have hxinvval : ↑p ^ x.valuation = ‖x‖⁻¹ := by
+        have := norm_mul_pow_neg_valuation_eq_one (Units.mk0 x h_x_ne_zero)
+        simp only [Units.val_mk0, zpow_neg, norm_mul,
+        norm_inv, norm_p_zpow, inv_inv] at this
+        rw[mul_eq_one_iff_inv_eq₀] at this
+        · exact Real.ext_cauchy (congrArg Real.cauchy (id (Eq.symm this)))
+        · simp only [ne_eq, norm_eq_zero]
+          exact h_x_ne_zero
+      rw[hxinvval]
+      rw[mul_inv_le_iff₀]
+      · simp only [one_mul]
+        exact h_x_max.1
+      · simp only [norm_pos_iff, ne_eq]
+        exact h_x_ne_zero
+    have hz' : ‖z'‖ ≤ 1 := by
+      unfold z'
+      simp only [zpow_neg, norm_mul, norm_inv, norm_p_zpow, inv_inv]
+      have hxinvval : ↑p ^ x.valuation = ‖x‖⁻¹ := by
+        have := norm_mul_pow_neg_valuation_eq_one (Units.mk0 x h_x_ne_zero)
+        simp only [Units.val_mk0, zpow_neg, norm_mul,
+        norm_inv, norm_p_zpow, inv_inv] at this
+        rw[mul_eq_one_iff_inv_eq₀] at this
+        · exact Real.ext_cauchy (congrArg Real.cauchy (id (Eq.symm this)))
+        · simp only [ne_eq, norm_eq_zero]
+          exact h_x_ne_zero
+      rw[hxinvval]
+      rw[mul_inv_le_iff₀]
+      · simp only [one_mul]
+        exact h_x_max.2
+      · simp only [norm_pos_iff, ne_eq]
+        exact h_x_ne_zero
+    have hnewsol : ((z' : ℚ_[p])^2 - p * (x' : ℚ_[p])^2
+      - v * (y' : ℚ_[p])^2 = 0) := by
+      unfold x' y' z'
+      grind
+    let z'' : ℤ_[p] := ⟨z',hz'⟩
+    let y'' : ℤ_[p] := ⟨y',hy'⟩
+    let x'' : ℤ_[p] := ⟨x',hx'⟩
+    use z'', y'', x''
+    constructor
+    · exact hnewsol
+    · right
+      right
+      exact PadicInt.isUnit_iff.mpr hx'unit
 
 --better name?
 /-- If `p` is a prime, `x, y, z in ℚ_[p]` satisfy `z ^ 2 - p * x ^ 2 - v * y ^ 2`, with `v` nonzero,
@@ -159,74 +182,6 @@ lemma exists_nontrivial_zero {v : (ℚ_[p])ˣ} {x y z : ℚ_[p]}
     (hnontriv : (x, y, z) ≠ (0, 0, 0)) (hsol : z ^ 2 - p * x ^ 2 - v * y ^ 2 = 0) :
     ∃ z' y' : ℤ_[p]ˣ, ∃ x' : ℤ_[p],
       (z' : ℚ_[p]) ^ 2 - p * (x' : ℚ_[p]) ^ 2 - v * (y' : ℚ_[p]) ^ 2 = 0 := by
-  have h₀ : ∃ (x' y' z' : ℤ_[p]),
-  ((z' : ℚ_[p])^2 - p * (x' : ℚ_[p])^2 - v * (y' : ℚ_[p])^2 = 0) ∧
-  (IsUnit x' ∨ IsUnit y' ∨ IsUnit z') := by
-    by_cases h_all_ints : (‖x‖ ≤ 1 ∧ ‖y‖ ≤ 1 ∧ ‖z‖ ≤ 1)
-    · by_cases h_all_ne_zero : (x ≠ 0 ∧ y ≠ 0 ∧ z ≠ 0)
-      · by_cases h_x_max : (‖y‖ ≤ ‖x‖ ∧ ‖z‖ ≤ ‖x‖)
-        · let x' := x * p ^ (-x.valuation)
-          let y' := y * p ^ (-x.valuation)
-          let z' := z * p ^(-x.valuation)
-          have hx' : ‖x'‖ = 1 := by
-            unfold x'
-            have := norm_mul_pow_neg_valuation_eq_one (Units.mk0 x h_all_ne_zero.1)
-            simp only [Units.val_mk0, zpow_neg, norm_mul,
-            norm_inv, norm_p_zpow, inv_inv] at this
-            simp only [zpow_neg, norm_mul, norm_inv, norm_p_zpow, inv_inv]
-            exact this
-          have hy' : ‖y'‖ ≤ 1 := by
-            unfold y'
-            simp only [zpow_neg, norm_mul, norm_inv, norm_p_zpow, inv_inv]
-            have hxinvval : ↑p ^ x.valuation = ‖x‖⁻¹ := by
-              have := norm_mul_pow_neg_valuation_eq_one (Units.mk0 x h_all_ne_zero.1)
-              simp only [Units.val_mk0, zpow_neg, norm_mul,
-              norm_inv, norm_p_zpow, inv_inv] at this
-              rw[mul_eq_one_iff_inv_eq₀] at this
-              · exact Real.ext_cauchy (congrArg Real.cauchy (id (Eq.symm this)))
-              · simp only [ne_eq, norm_eq_zero]
-                exact h_all_ne_zero.1
-            rw[hxinvval]
-            rw[mul_inv_le_iff₀]
-            · simp only [one_mul]
-              exact h_x_max.1
-            · simp only [norm_pos_iff, ne_eq]
-              exact h_all_ne_zero.1
-          have hz' : ‖z'‖ ≤ 1 := by
-            unfold z'
-            simp only [zpow_neg, norm_mul, norm_inv, norm_p_zpow, inv_inv]
-            have hxinvval : ↑p ^ x.valuation = ‖x‖⁻¹ := by
-              have := norm_mul_pow_neg_valuation_eq_one (Units.mk0 x h_all_ne_zero.1)
-              simp only [Units.val_mk0, zpow_neg, norm_mul,
-              norm_inv, norm_p_zpow, inv_inv] at this
-              rw[mul_eq_one_iff_inv_eq₀] at this
-              · exact Real.ext_cauchy (congrArg Real.cauchy (id (Eq.symm this)))
-              · simp only [ne_eq, norm_eq_zero]
-                exact h_all_ne_zero.1
-            rw[hxinvval]
-            rw[mul_inv_le_iff₀]
-            · simp only [one_mul]
-              exact h_x_max.2
-            · simp only [norm_pos_iff, ne_eq]
-              exact h_all_ne_zero.1
-          have hnewsol : ((z' : ℚ_[p])^2 - p * (x' : ℚ_[p])^2
-          - v * (y' : ℚ_[p])^2 = 0) := by
-            unfold x' y' z'
-            grind
-          sorry -- x is a unit
-        · by_cases h_y_max : (‖z‖ ≤ ‖y‖)
-          · sorry -- do this the same as h_x_max, so consolidate into one lemma
-          · sorry -- do this the same as h_x_max, so consolidate into one lemma
-      · sorry
-    · sorry
-  obtain ⟨x', y', z', h₁, h₂⟩ := h₀
-  have h₃ : (IsUnit y' ∧ IsUnit z') := by
-    by_contra
-    have h₄ : ¬(IsUnit x') := by
-      sorry
-    have h₅ : ¬(IsUnit x' ∨ IsUnit y' ∨ IsUnit z') := by
-      sorry
-    contradiction
   sorry
 
 lemma common_root_tfae {σ ι : Type*} {f : ι → MvPolynomial σ ℤ_[p]}
@@ -251,7 +206,7 @@ namespace Polynomial
 /-- An element in ℤ_p (p odd) is a square if its reduction modulo p is a square. -/
 lemma squares_in_Zp {p : ℕ} [Fact (Nat.Prime p)] (hodd : p ≠ 2) (m : ℤ_[p]) (n : ℕ)
     (hmod : m.zmodRepr ≡ n ^ 2 [MOD p]) : ∃ x : ℤ_[p], m = x ^ 2 := by
-  --let F : ℤ_[p][X] := X ^ 2 - m
+  let F : ℤ_[p][X] := X ^ 2 - C m
   sorry
 
 /-- An element in ℤ_2 is a square if its reduction modulo 8 is a square. -/
