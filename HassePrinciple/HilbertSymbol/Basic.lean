@@ -164,13 +164,9 @@ theorem eq_one_or_neg_one (ha : a ≠ 0) (hb : b ≠ 0) :
 
 theorem eq_neg_one_iff_not_one (ha : a ≠ 0) (hb : b ≠ 0) :
     hilbertSym a b = -1 ↔ ¬hilbertSym a b = 1 := by
-  constructor
-  · intro h
-    rw [h]
-    simp only [Int.reduceNeg, reduceCtorEq, not_false_eq_true]
-  · intro h
-    have: hilbertSym a b = 1 ∨ hilbertSym a b = -1 := eq_one_or_neg_one ha hb
-    aesop
+  refine ⟨fun h ↦ by simp [h], fun h ↦ ?_⟩ 
+  have := eq_one_or_neg_one ha hb
+  aesop
 
 /-- If the Hilbert symbol of a and b equals 1, then the Hilbert symbol of a and b * b' equals the
 Hilbert symbol of a and b'. -/
