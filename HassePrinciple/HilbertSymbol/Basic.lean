@@ -229,13 +229,7 @@ a and b. -/
 @[simp]
 theorem right_minus_self_mul (ha : a ≠ 1) :
     hilbertSym a ((1 - a) * b) = hilbertSym a b := by
-  by_cases hzero : a = 0
-  · aesop
-  · have hone : hilbertSym a (1-a) = 1 := by
-      apply right_one_minus_self_eq_one hzero
-      exact ha
-    apply right_mul_eq_of_eq_one
-    exact hone
+  by_cases hzero : a = 0 <;> aesop
 
 end Field
 
