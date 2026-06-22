@@ -220,15 +220,9 @@ theorem right_mul_eq_of_eq_one (hab : hilbertSym a b = 1) :
 @[simp]
 theorem right_neg_mul : hilbertSym a (- (a * b)) = hilbertSym a b := by
   by_cases hzero : a = 0
-  · simp only [hzero, zero_mul, neg_zero]
-    unfold hilbertSym
-    aesop
-  · have hnega : hilbertSym a (-a) = 1 := by
-      apply right_neg_self_eq_one
-      simp only [ne_eq]
-      exact hzero
-    rw [← neg_mul]
-    exact right_mul_eq_of_eq_one b hnega
+  · simp [hzero, hilbertSym]
+  · rw [← neg_mul]
+    exact right_mul_eq_of_eq_one b (right_neg_self_eq_one hzero)
 
 /-- If a is different from 1, then the Hilbert symbol of a and (1-a)*b equals the Hilbert symbol of
 a and b. -/
