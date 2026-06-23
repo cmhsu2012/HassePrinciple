@@ -95,7 +95,9 @@ lemma eq_one_or_neg_one :
 end HasseMinkoskiInvariant
 
 open Module
-section Padic
+namespace Padic
+
+-- Q : Can we unify the `Padic` and `Real` sections?
 
 variable {p : ℕ} [Fact (Nat.Prime p)]
 
@@ -117,5 +119,51 @@ lemma represents_iff_of_rank_two (b : Basis (Fin 2) ℚ_[p] V) (a : ℚ_[p]) :
   sorry
 
 end Padic
+
+namespace Real
+
+instance : Invertible (2 : ℝ) := sorry
+
+variable {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+  {Q : QuadraticForm ℝ V} (hQ : Q.Nondegenerate)
+
+lemma represents_zero_iff_of_rank_three (b : Basis (Fin 3) ℝ V) :
+    Q.represents 0 ↔
+      hilbertSym (-1) (-Q.discr b) =
+        HasseMinkoskiInvariant (Q.nondegenerate_associated_iff.mpr hQ).1 := by
+  sorry
+
+lemma represents_iff_of_rank_two (b : Basis (Fin 2) ℝ V) (a : ℝ) :
+    Q.represents a ↔
+      hilbertSym a (-Q.discr b) =
+        HasseMinkoskiInvariant (Q.nondegenerate_associated_iff.mpr hQ).1 := by
+  sorry
+
+end Real
+
+section Field
+
+-- TODO: check that this level of generality works; otherwise split into Padic and Real cases.
+
+variable {K : Type*} [Field K] [Algebra ℚ K]
+
+instance invertibleTwo : Invertible (2 : k) := sorry
+
+variable {V : Type*} [AddCommGroup V] [Module K V] [FiniteDimensional K V]
+  {Q : QuadraticForm K V} (hQ : Q.Nondegenerate)
+
+lemma represents_zero_iff_of_rank_three (b : Basis (Fin 3) K V) :
+    Q.represents 0 ↔
+      hilbertSym (-1) (-Q.discr b) =
+        HasseMinkoskiInvariant (Q.nondegenerate_associated_iff.mpr hQ).1 := by
+  sorry
+
+lemma represents_iff_of_rank_two (b : Basis (Fin 2) K V) (a : K) :
+    Q.represents a ↔
+      hilbertSym a (-Q.discr b) =
+        HasseMinkoskiInvariant (Q.nondegenerate_associated_iff.mpr hQ).1 := by
+  sorry
+
+end Field
 
 end QuadraticForm
