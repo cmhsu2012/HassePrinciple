@@ -95,6 +95,7 @@ private theorem isotropic_prod_neg {K : Type*} [Field K] [CharZero K] {w : Fin 2
 
 open hilbertSym
 
+/-- Rank 4 case of Hasse-Minkowski. -/
 lemma isotropic_of_rank_four (hr : finrank ℚ V = 4) (hQ : Q.Nondegenerate)
     (hQ' : Q.EverywhereLocallyIsotropic) : Q.Isotropic := by
   have : FiniteDimensional ℚ V := finite_of_finrank_pos (Nat.lt_of_sub_eq_sub_one hr)
@@ -178,15 +179,13 @@ lemma isotropic_of_rank_four (hr : finrank ℚ V = 4) (hQ : Q.Nondegenerate)
     rw [this]
     refine ⟨⟨almost_all_one _ _, almost_all_one (-w ⟨2, by omega⟩) (-w ⟨3, by omega⟩)⟩,
       ⟨prod_eq_one _ _, ?_⟩, fun p ↦ ⟨(hp p).choose, hp' p⟩ , ⟨xr, hxr'⟩⟩
-    convert prod_eq_one (-w ⟨2, by omega⟩) (-w ⟨3, by omega⟩) <;> simp
+    exact_mod_cast prod_eq_one (-w ⟨2, by omega⟩) (-w ⟨3, by omega⟩)
   -- We conclude by showing that `x` is represented by `Q1` and `Q2`.
   refine ⟨x, ?_, ?_⟩
   · rw [represents_iff_sub_isotropic (nondegenerate_weightedSumSquares _)]
-    apply isotropic_of_rank_three _ (by simp) (nondegenerate_prod
+    exact isotropic_of_rank_three _ (by simp) (nondegenerate_prod
       (nondegenerate_weightedSumSquares _) (nondegenerate_weightedSumSquares _))
-    refine ⟨fun p _ ↦ isotropic_prod_neg (hx.1 ⟨p, Fact.out⟩).1, ?_⟩
-    · apply isotropic_prod_neg
-      convert hx.2.1 using 1 <;> simp
+      ⟨fun p _ ↦ isotropic_prod_neg (hx.1 ⟨p, Fact.out⟩).1, isotropic_prod_neg hx.2.1⟩
   · rw [represents_iff_sub_isotropic (nondegenerate_weightedSumSquares _)]
     apply isotropic_of_rank_three _ (by simp) (nondegenerate_prod
       (nondegenerate_weightedSumSquares _) (nondegenerate_weightedSumSquares _))

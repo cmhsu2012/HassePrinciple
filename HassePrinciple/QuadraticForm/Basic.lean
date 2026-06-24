@@ -361,6 +361,7 @@ lemma nondegenerate_iff_discr_ne_zero [IsDomain R] :
     Q.Nondegenerate ↔ Q.discr b ≠ 0 := by
   sorry
 
+/-- The base change of a nondegenerate quadratic form is nondegenerate. -/
 lemma nondegenerate_baseChange [IsDomain R] [Module.Free R M] [Module.Finite R M] {A : Type*}
     [CommRing A] [IsDomain A] [Algebra R A] [FaithfulSMul R A] [Invertible (2 : A)]
     (hQ : Q.Nondegenerate) : (Q.baseChange A).Nondegenerate := by
@@ -370,6 +371,8 @@ lemma nondegenerate_baseChange [IsDomain R] [Module.Free R M] [Module.Finite R M
     ← map_zero (algebraMap R A)]
   simp [hQ]
 
+/-- Given quadratic forms `Q` and `Q'` with matrices `A` and `B` with respect to bases `b` and `b'`,
+respectively, the matrix associated is the block diagonal matrix `[[A, 0], [0, B]]`. -/
 theorem toMatrix_prod {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
     [IsDomain R] {Q' : QuadraticForm R N} (b : Module.Basis ι R M)
     (b' : Module.Basis κ R N) :
@@ -382,12 +385,14 @@ theorem toMatrix_prod {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ]
   · ext i j; simp [Matrix.toBlocks₂₁, toMatrix]
   · ext i j; simp [Matrix.toBlocks₂₂, toMatrix]
 
+/-- The discriminant of the product of quadratic forms is the product of the discriminants. -/
 theorem discr_prod {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
     [IsDomain R] {Q' : QuadraticForm R N} (b : Module.Basis ι R M)
     (b' : Module.Basis κ R N) :
     discr (b.prod b') (Q.prod Q') = discr b Q * discr b' Q' := by
   simp [discr, prod, toMatrix_prod]
 
+/-- The product of two nondegenerate quadratic forms is nondegenerate. -/
 lemma nondegenerate_prod [IsDomain R] [Module.Free R M] [Module.Finite R M]
     [Module.Free R N] [Module.Finite R N] {Q' : QuadraticForm R N}
     (hQ : Q.Nondegenerate) (hQ' : Q'.Nondegenerate) :
