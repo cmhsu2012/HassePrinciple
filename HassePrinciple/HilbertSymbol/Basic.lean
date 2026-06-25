@@ -142,7 +142,62 @@ end Field
 b is positive. -/
 theorem real_eq {a b : ℝ} (ha : a ≠ 0) (hb : b ≠ 0) :
     hilbertSym a b = if 0 < a ∨ 0 < b then 1 else -1 := by
-  sorry
+  split_ifs with h
+  · rw [hilbertSym]
+    simp only [ha, hb, or_self, ↓reduceIte, ne_eq, Prod.mk.injEq, not_and, Int.reduceNeg,
+      ite_eq_left_iff, not_exists, reduceCtorEq, imp_false, not_forall,
+      Decidable.not_not]
+    rcases h with (h₁ | h₂)
+    · use (Real.sqrt a), 1, 0
+      refine ⟨(by simp), ?_⟩
+      ring_nf
+      rw [sub_eq_zero]
+      refine Real.sq_sqrt (by linarith)
+    · use (Real.sqrt b), 0, 1
+      refine ⟨(by simp), ?_⟩
+      ring_nf
+      rw [sub_eq_zero]
+      refine Real.sq_sqrt (by linarith)
+  · simp only [not_or, not_lt] at h
+    obtain ⟨ h₃, h₄⟩ :=h
+    have hₚ : ∀ z : ℝ, 0 ≤ z ^ 2 := fun _ ↦ by positivity
+    have hₓ : ∀ c : ℝ, ∀ z : ℝ, c ≤ 0 → 0 ≤ - c * z ^ 2 := by
+      intro c z h₅
+      rw [neg_mul, Left.nonneg_neg_iff]
+      apply mul_nonpos_of_nonpos_of_nonneg h₅ (hₚ z)
+    have hᵤ : ∀ x : ℝ, ∀ y : ℝ, 0 ≤ - a * x ^ 2 - b * y ^ 2 := by
+      intro x y
+      have : 0 ≤ -a * x^2 := by apply hₓ a x h₃
+      have : 0 ≤ -b * y^2 := by apply hₓ b y h₄
+      linarith
+    have hₜ (r s : ℝ) (hᵣ : 0 ≤ r) (hₛ : 0 ≤ s) (hsum : r + s = 0) : r = 0 ∧ s =0 := by
+      exact (add_eq_zero_iff_of_nonneg hᵣ hₛ).mp hsum
+    rw [hilbertSym]
+    simp only [ha, hb, or_self, ↓reduceIte, ne_eq, Prod.mk.injEq, not_and, Int.reduceNeg,
+      ite_eq_right_iff, reduceCtorEq, imp_false, not_exists]
+    intro z x y h₆
+    have hₖ : 0 ≤ -a * x^2 := by apply hₓ a x h₃
+    have hⱼ : 0 ≤ -b * y^2 := by apply hₓ b y h₄
+    have hₘ : -a * x ^ 2 - b * y ^ 2= -a * x ^ 2 + - (b * y ^ 2) := by
+      exact SubNegMonoid.sub_eq_add_neg (-a * x ^ 2) (b * y ^ 2)
+    rw [← neg_mul b] at hₘ
+    intro h₇
+    have h₈ := hₜ (z^2) (-a*x^2-b*y^2) (hₚ z) (hᵤ x y)
+    have : z ^ 2 + (-a * x ^ 2 - b * y ^ 2) = z ^ 2 -a * x ^ 2 - b * y ^ 2 := by ring
+    rw [this] at h₈
+    have := h₈ h₇
+    obtain ⟨ h₉, h₀⟩ := this
+    rw [hₘ] at h₀
+    have hₙ : z = 0 := by exact eq_zero_of_pow_eq_zero h₉
+    have hₒ : x = 0 := by
+      have := (hₜ (-a * x^2) (-b * y^2) hₖ hⱼ h₀).1
+      rw [neg_mul,neg_eq_zero, mul_eq_zero_iff_left ha] at this
+      exact eq_zero_of_pow_eq_zero this
+    have hₗ : y = 0 := by
+      have := (hₜ (-a * x^2) (-b * y^2) hₖ hⱼ h₀).2
+      rw [neg_mul, neg_eq_zero, mul_eq_zero_iff_left hb] at this
+      exact eq_zero_of_pow_eq_zero this
+    apply h₆ hₙ hₒ hₗ
 
 open Padic PadicInt
 section odd
