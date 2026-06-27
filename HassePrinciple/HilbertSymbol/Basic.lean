@@ -43,6 +43,11 @@ section Field
 
 variable {k : Type*} [Field k] {a b : k} (a' b' : k)
 
+lemma eq_one_or_neg_one_of_ne_zero (ha : a ≠ 0) (hb : b ≠ 0) :
+    hilbertSym a b = 1 ∨ hilbertSym a b = -1 := by
+  simp only [hilbertSym, ha, hb, false_or, if_false]
+  split_ifs <;> tauto
+
 /-- If `a` and `b` are nonzero, then `hilbertSym a b` is nonzero. -/
 lemma ne_zero_of_ne_zero (ha : a ≠ 0) (hb : b ≠ 0) : hilbertSym a b ≠ 0 := by
   simp [hilbertSym, ha, hb]
@@ -102,25 +107,13 @@ theorem eq_one_iff (ha : a ≠ 0) (hb : b ≠ 0) (hc : ¬IsSquare b) :
     symm
     rw [sub_eq_zero] at heq
     have hx : x ≠ 0 := by
-      simp only [ne_eq]
       contrapose heq
-      rw [heq]
-      ring_nf
       contrapose hc
-      unfold IsSquare
-      use z/y
-      field_simp
-      rw [hc]
-      field_simp
-      rw [div_self]
-      simp only [ne_eq]
-      aesop
-    calc
-      QuadraticAlgebra.norm { re := z / x, im := y / x }
-      =  z / x * (z / x) - b * (y / x) * (y / x)  := by
-        simp only [QuadraticAlgebra.norm, zero_mul, add_zero, MonoidHom.coe_mk, OneHom.coe_mk]
-      _ = z^2/x^2 - b * (y^2/x^2) := by field_simp
-      _ = (z^2-b*y^2)/x^2 := by ring
+      use z / y
+      grind
+    calc QuadraticAlgebra.norm { re := z / x, im := y / x }
+      _ = z / x * (z / x) - b * (y / x) * (y / x) := by simp [QuadraticAlgebra.norm]
+      _ = (z ^ 2 - b * y ^ 2) / x ^ 2 := by ring
       _ = a := by
         rw [← heq, sub_sub_cancel]
         field_simp
@@ -331,25 +324,17 @@ end two
 -/
 open Nat
 
-/-- For `a, b : ℚ`, and for a prime `p : ℕ`, `atP a b p` denotes the Hilbert symbol of `a` and `b`
-computed in `ℚ_[p]`. -/
-noncomputable abbrev atP (a b : ℚ) (p : ℕ) [hp : Fact (Nat.Prime p)] : ℤ :=
-  hilbertSym (a : ℚ_[p]) (b : ℚ_[p])
-
-/-- For `a, b : ℚ`, `atInfty a b` the Hilbert symbol of `a` and `b` computed in `ℝ`. -/
-noncomputable abbrev atInfty (a b : ℚ) : ℤ := hilbertSym (a : ℝ) (b : ℝ)
-
 /-- The instance that provides the fact that the nth prime is prime. -/
 scoped instance fact_prime (p : Nat.Primes) : Fact (Nat.Prime p) := fact_iff.mpr p.2
 
 /-- For all but finitely many primes `p`, the Hilbert symbol of `a` and `b` at `p` is `1`. -/
 theorem almost_all_one (a b : ℚˣ) :
-    ∀ᶠ (p : Nat.Primes) in Filter.cofinite, atP a b p = 1 := by
+    ∀ᶠ (p : Nat.Primes) in Filter.cofinite, hilbertSym (a : ℚ_[p]) b = 1 := by
   sorry
 
 /-- The product of the Hilbert symbols at all places equals 1. -/
 theorem prod_eq_one (a b : ℚˣ) :
-    atInfty a b * ∏ᶠ (p : Nat.Primes), atP a b p = 1 := by
+    (∏ᶠ (p : Nat.Primes), hilbertSym (a : ℚ_[p]) b) * hilbertSym (a : ℝ) b = 1 := by
   sorry
 
 end hilbertSym
