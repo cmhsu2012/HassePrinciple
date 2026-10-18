@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2026 Nirvana Coppola, María Inés de Frutos-Fernández. All rights reserved.
+Copyright (c) 2026 Nirvana Coppola, María Inés de Frutos-Fernández, Catherine Hsu. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Nirvana Coppola, María Inés de Frutos-Fernández
+Authors: Nirvana Coppola, María Inés de Frutos-Fernández, Catherine Hsu
 -/
 
 module
@@ -65,7 +65,7 @@ theorem eq_neg_one_iff_not_one (ha : IsUnit a) :
   have := eq_one_or_neg_one ha
   lia
 
-/-- The Legendre symbol of `p` and `a` is zero iff `p ∣ a`. -/
+/-- The Legendre symbol of a p-adic integer `a` is zero iff `p ∣ a`. -/
 theorem eq_zero_iff : legendreSym a = 0 ↔ ¬ IsUnit a :=
   ⟨fun _ h ↦ by have := eq_one_or_neg_one h; lia, fun h ↦ by rw [MulChar.map_nonunit
   legendreSym h]⟩
@@ -78,14 +78,26 @@ noncomputable def hom : ℤ_[p] →*₀ ℤ where
   map_one'     := by simp [legendreSym]
   map_mul' _ _ := by simp [legendreSym, map_mul]
 
+/-- The image of a unit under an arbitrary homomorphism to the integers is 1 or -1. -/
+lemma hom_eq_one_or_neg_one {M : Type*} [MonoidWithZero M] (f : M →*₀ ℤ) (b : M) (hb : IsUnit b) :
+    f b = 1 ∨ f b =  -1 := Int.isUnit_eq_one_or (IsUnit.map f hb)
+
+/-- The square of the image of 'b' under a homomorphism to the integers is 1 if 'b' is a unit. -/
+theorem hom_sq_one {M : Type*} [MonoidWithZero M] (f : M →*₀ ℤ) (b : M) (hb : IsUnit b) :
+    f b ^ 2 = 1 := by
+  cases hom_eq_one_or_neg_one f b hb <;> aesop
+
+/-- The image of the square of 'b' under a homomorphism to the integers is 1 if 'b' is a unit. -/
+theorem hom_sq_one' {M : Type*} [MonoidWithZero M] (f : M →*₀ ℤ) (b : M) (hb : IsUnit b) :
+    f (b ^ 2) = 1 := by
+  rw [pow_two]
+  cases hom_eq_one_or_neg_one f b hb <;> aesop
+
 /-- The square of the symbol is 1 if `a` is a unit. -/
-theorem sq_one (ha : IsUnit a) : legendreSym a ^ 2 = 1 := by
-   cases eq_one_or_neg_one ha <;> aesop
+theorem sq_one (ha : IsUnit a) : legendreSym a ^ 2 = 1 := hom_sq_one hom a ha
 
 /-- The Legendre symbol of `a^2` at `p` is 1 if `a` is a unit. -/
-theorem sq_one' (ha : IsUnit a) : legendreSym (a ^ 2) = 1 := by
-  rw [pow_two]
-  cases eq_one_or_neg_one ha <;> aesop
+theorem sq_one' (ha : IsUnit a) : legendreSym (a ^ 2) = 1 := hom_sq_one' hom a ha
 
 /-- If `a` is a unit, then `legendreSym a = 1` iff `a` is a square mod `p`. -/
 theorem eq_one_iff (ha : IsUnit a) : legendreSym a = 1 ↔ IsSquare (a.toZMod) := by
