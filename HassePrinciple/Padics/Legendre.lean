@@ -1,5 +1,6 @@
 /-
-Copyright (c) 2026 Nirvana Coppola, María Inés de Frutos-Fernández, Catherine Hsu. All rights reserved.
+Copyright (c) 2026 Nirvana Coppola, María Inés de Frutos-Fernández, Catherine Hsu.
+All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Nirvana Coppola, María Inés de Frutos-Fernández, Catherine Hsu
 -/
@@ -9,7 +10,22 @@ module
 public import Mathlib.NumberTheory.LegendreSymbol.Basic
 public import Mathlib.NumberTheory.Padics.RingHoms
 
-/-! # The Legendre Symbol for Padic Integers. -/
+/-!
+### The Legendre Symbol for Padic Integers
+
+This file contains results about Legendre symbols for p-adic integers.
+
+We define the Legendre symbol $\Bigl(\frac{a}{p}\Bigr)$ as `legendreSym p a`, as the composition of
+reduction map modulo p and the usual Legendre symbol for the integers.
+
+## Main results
+
+The main results follow the API of the usual Legendre symbol.
+
+## Tags
+
+quadratic residue, quadratic nonresidue, Legendre symbol
+-/
 
 @[expose] public section
 
